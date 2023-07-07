@@ -27,6 +27,40 @@ def crear_conexion(request):
     return render(request, 'crear_conexion.html', context)
 
 
+# def calcular_distancia(request):
+#     if request.method == 'POST':
+#         start_node_id = request.POST.get('start_node')
+#         end_node_id = request.POST.get('end_node')
+#
+#         start_node = Punto.objects.get(id=start_node_id)
+#         end_node = Punto.objects.get(id=end_node_id)
+#
+#         puntos = Punto.objects.all()
+#         graph = crear_grafo(puntos)
+#
+#         if start_node.codigo not in graph or end_node.codigo not in graph:
+#             # Manejar el caso cuando los nodos de inicio o fin no existen en el grafo
+#             # Puedes mostrar un mensaje de error o redireccionar a una página de error
+#             return render(request, 'error.html')
+#
+#         formatted_distance = dijkstra(graph, start_node.codigo, end_node.codigo)
+#
+#         context = {
+#             'start_node': start_node,
+#             'end_node': end_node,
+#             'puntos': puntos,
+#             'formatted_distance': formatted_distance,
+#         }
+#
+#         return render(request, 'calcular_distancia.html', context)
+#
+#     puntos = Punto.objects.all()
+#
+#     context = {
+#         'puntos': puntos,
+#     }
+#
+#     return render(request, 'calcular_distancia.html', context)
 def calcular_distancia(request):
     if request.method == 'POST':
         start_node_id = request.POST.get('start_node')
@@ -39,17 +73,16 @@ def calcular_distancia(request):
         graph = crear_grafo(puntos)
 
         if start_node.codigo not in graph or end_node.codigo not in graph:
-            # Manejar el caso cuando los nodos de inicio o fin no existen en el grafo
-            # Puedes mostrar un mensaje de error o redireccionar a una página de error
             return render(request, 'error.html')
 
-        formatted_distance = dijkstra(graph, start_node.codigo, end_node.codigo)
+        distance, path = dijkstra(graph, start_node.codigo, end_node.codigo)
 
         context = {
             'start_node': start_node,
             'end_node': end_node,
             'puntos': puntos,
-            'formatted_distance': formatted_distance,
+            'distance': distance,
+            'path': path,
         }
 
         return render(request, 'calcular_distancia.html', context)
