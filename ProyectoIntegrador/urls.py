@@ -17,6 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from django.urls import path
+from unlMaps import views
+
 urlpatterns = [
+    path('crear-conexion/', views.crear_conexion, name='crear_conexion'),
+    path('calcular-distancia/', views.calcular_distancia, name='calcular_distancia'),
     path('admin/', admin.site.urls),
 ]

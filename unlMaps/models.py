@@ -43,5 +43,11 @@ class Bloque(Punto):
     def __str__(self):
         return self.nomenclatura
 
+class Conexion(models.Model):
+    nodo_origen = models.ForeignKey('Punto', on_delete=models.CASCADE, related_name='conexiones_salientes')
+    nodo_destino = models.ForeignKey('Punto', on_delete=models.CASCADE, related_name='conexiones_entrantes')
+
+    def __str__(self):
+        return f"Conexión de {self.nodo_origen} a {self.nodo_destino}"
 
 

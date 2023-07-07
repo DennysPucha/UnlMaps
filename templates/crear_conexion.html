@@ -1,0 +1,18 @@
+<form method="post" action="{% url 'crear_conexion' %}">
+  {% csrf_token %}
+  <label for="punto_origen">Punto de origen:</label>
+  <select name="punto_origen" id="punto_origen">
+    {% for punto in puntos %}
+      <option value="{{ punto.id }}">{{ punto.codigo }}</option>
+    {% endfor %}
+  </select>
+
+  <label for="punto_destino">Punto de destino:</label>
+  <select name="punto_destino" id="punto_destino">
+    {% for punto in puntos %}
+      <option value="{{ punto.id }}">{{ punto.codigo }}</option>
+    {% endfor %}
+  </select>
+
+  <button type="submit">Crear Conexión</button>
+</form>
