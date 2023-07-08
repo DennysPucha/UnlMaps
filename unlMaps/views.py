@@ -77,6 +77,8 @@ def calcular_distancia(request):
 
         distance, path = dijkstra(graph, start_node.codigo, end_node.codigo)
 
+        distance = round(distance, 2)
+
         context = {
             'start_node': start_node,
             'end_node': end_node,
