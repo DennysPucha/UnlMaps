@@ -1,10 +1,8 @@
-from locale import format_string
 
-from django.shortcuts import render, redirect
 from .models import Punto, Conexion
 from .algoritmos.algoritmo import crear_grafo, dijkstra
-
-
+from django.shortcuts import render, redirect
+from .models import Bloque, Punto, Facultad
 def crear_conexion(request):
     if request.method == 'POST':
         punto_origen_id = request.POST.get('punto_origen')
@@ -26,41 +24,6 @@ def crear_conexion(request):
 
     return render(request, 'crear_conexion.html', context)
 
-
-# def calcular_distancia(request):
-#     if request.method == 'POST':
-#         start_node_id = request.POST.get('start_node')
-#         end_node_id = request.POST.get('end_node')
-#
-#         start_node = Punto.objects.get(id=start_node_id)
-#         end_node = Punto.objects.get(id=end_node_id)
-#
-#         puntos = Punto.objects.all()
-#         graph = crear_grafo(puntos)
-#
-#         if start_node.codigo not in graph or end_node.codigo not in graph:
-#             # Manejar el caso cuando los nodos de inicio o fin no existen en el grafo
-#             # Puedes mostrar un mensaje de error o redireccionar a una página de error
-#             return render(request, 'error.html')
-#
-#         formatted_distance = dijkstra(graph, start_node.codigo, end_node.codigo)
-#
-#         context = {
-#             'start_node': start_node,
-#             'end_node': end_node,
-#             'puntos': puntos,
-#             'formatted_distance': formatted_distance,
-#         }
-#
-#         return render(request, 'calcular_distancia.html', context)
-#
-#     puntos = Punto.objects.all()
-#
-#     context = {
-#         'puntos': puntos,
-#     }
-#
-#     return render(request, 'calcular_distancia.html', context)
 def calcular_distancia(request):
     if request.method == 'POST':
         start_node_id = request.POST.get('start_node')
@@ -96,3 +59,82 @@ def calcular_distancia(request):
     }
 
     return render(request, 'calcular_distancia.html', context)
+
+
+def crear_objeto(request):
+    if request.method == 'POST':
+        tipo_objeto = request.POST.get('tipo_objeto')
+        if tipo_objeto == 'bloque':
+            return redirect('crear_bloque')
+        elif tipo_objeto == 'punto':
+            return redirect('crear_punto')
+
+    return render(request, 'crear_objeto.html')
+def admin(request):
+    facultades = Facultad.objects.all()
+    return render(request, 'admin.html', {'facultades': facultades})
+
+
+def crear_bloque(request):
+    if request.method == 'POST':
+        # Obtener los datos del formulario
+        codigo = request.POST['codigo']
+        latitud = request.POST['latitud']
+        longitud = request.POST['longitud']
+        descripcion = request.POST['descripcion']
+        informacion = request.POST['informacion']
+        valoracion = request.POST['valoracion']
+        foto = request.FILES['foto']
+        facultad_id = request.POST['facultad']
+
+        # Obtener la facultad seleccionada
+        facultad = Facultad.objects.get(id=facultad_id)
+
+        # Crear el objeto Bloque y guardar en la base de datos
+        bloque = Bloque(
+            codigo=codigo,
+            latitud=latitud,
+            longitud=longitud,
+            descripcion=descripcion,
+            informacion=informacion,
+            valoracion=valoracion,
+            foto=foto,
+            facultad=facultad
+        )
+        bloque.save()
+
+        # Redireccionar a la página de administración o la página deseada
+        return redirect('/')
+
+    # Si la solicitud es GET, renderizar el formulario
+    facultades = Facultad.objects.all()
+    return render(request, 'crear_bloque.html', {'facultades': facultades})
+
+def crear_punto(request):
+    if request.method == 'POST':
+        # Obtener los datos del formulario
+        codigo = request.POST['codigo']
+        latitud = request.POST['latitud']
+        longitud = request.POST['longitud']
+        descripcion = request.POST['descripcion']
+        facultad_id = request.POST['facultad']
+
+        # Obtener la facultad seleccionada
+        facultad = Facultad.objects.get(id=facultad_id)
+
+        # Crear el objeto Punto y guardar en la base de datos
+        punto = Punto(
+            codigo=codigo,
+            latitud=latitud,
+            longitud=longitud,
+            descripcion=descripcion,
+            facultad=facultad
+        )
+        punto.save()
+
+        # Redireccionar a la página de administración o la página deseada
+        return redirect('/')
+
+    # Si la solicitud es GET, renderizar el formulario
+    facultades = Facultad.objects.all()
+    return render(request, 'crear_punto.html', {'facultades': facultades})

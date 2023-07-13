@@ -23,5 +23,8 @@ from unlMaps import views
 urlpatterns = [
     path('crear-conexion/', views.crear_conexion, name='crear_conexion'),
     path('calcular-distancia/', views.calcular_distancia, name='calcular_distancia'),
+    path('seleccionar_tipo_de_nodo/', views.crear_objeto, name='crear_objeto'),
+    path('crear_bloque/', views.crear_bloque, name='crear_bloque'),
+    path('crear_punto/', views.crear_punto, name='crear_punto'),
     path('admin/', admin.site.urls),
 ]

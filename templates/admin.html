@@ -1,0 +1,88 @@
+<!-- admin.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin</title>
+</head>
+<body>
+    <h1>Admin</h1>
+
+    <h2>Crear Objeto</h2>
+    <form>
+        <label for="tipo_objeto">Tipo de Objeto:</label>
+        <select name="tipo_objeto" id="tipo_objeto" onchange="cargarFormulario()">
+            <option value="bloque">Bloque</option>
+            <option value="punto">Punto</option>
+        </select>
+    </form>
+
+    <div id="formulario-container"></div>
+
+    <script>
+        function cargarFormulario() {
+            const tipoObjeto = document.getElementById("tipo_objeto").value;
+            const formularioContainer = document.getElementById("formulario-container");
+
+            formularioContainer.innerHTML = "";
+
+            if (tipoObjeto === "bloque") {
+                formularioContainer.innerHTML = `
+                    <h2>Crear Bloque</h2>
+                    <form action="/admin/crear_bloque/" method="POST">
+                        {% csrf_token %}
+                        <label for="codigo">Código:</label>
+                        <input type="text" name="codigo" id="codigo">
+                        <br>
+                        <label for="latitud">Latitud:</label>
+                        <input type="text" name="latitud" id="latitud">
+                        <br>
+                        <label for="longitud">Longitud:</label>
+                        <input type="text" name="longitud" id="longitud">
+                        <br>
+                        <label for="descripcion">Descripción:</label>
+                        <input type="text" name="descripcion" id="descripcion">
+                        <br>
+                        <label for="informacion">Información:</label>
+                        <input type="text" name="informacion" id="informacion">
+                        <br>
+                        <label for="valoracion">Valoración:</label>
+                        <input type="number" name="valoracion" id="valoracion">
+                        <br>
+                        <label for="foto">Foto:</label>
+                        <input type="file" name="foto" id="foto">
+                        <br>
+                        <input type="submit" value="Guardar">
+                    </form>
+                `;
+            } else if (tipoObjeto === "punto") {
+                formularioContainer.innerHTML = `
+                    <h2>Crear Punto</h2>
+                    <form action="/admin/crear_punto/" method="POST">
+                        {% csrf_token %}
+                        <label for="codigo">Código:</label>
+                        <input type="text" name="codigo" id="codigo">
+                        <br>
+                        <label for="latitud">Latitud:</label>
+                        <input type="text" name="latitud" id="latitud">
+                        <br>
+                        <label for="longitud">Longitud:</label>
+                        <input type="text" name="longitud" id="longitud">
+                        <br>
+                        <label for="descripcion">Descripción:</label>
+                        <input type="text" name="descripcion" id="descripcion">
+                        <br>
+                        <label for="facultad">Facultad:</label>
+                        <select name="facultad" id="facultad">
+                            {% for facultad in facultades %}
+                            <option value="{{ facultad.id }}">{{ facultad.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                        <br>
+                        <input type="submit" value="Guardar">
+                    </form>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

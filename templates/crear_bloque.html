@@ -1,0 +1,43 @@
+<!-- crear_bloque.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crear Bloque</title>
+</head>
+<body>
+    <h1>Crear Bloque</h1>
+
+    <form action="/crear_bloque/" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="codigo">Código:</label>
+        <input type="text" name="codigo" id="codigo">
+        <br>
+        <label for="latitud">Latitud:</label>
+        <input type="text" name="latitud" id="latitud">
+        <br>
+        <label for="longitud">Longitud:</label>
+        <input type="text" name="longitud" id="longitud">
+        <br>
+        <label for="descripcion">Descripción:</label>
+        <input type="text" name="descripcion" id="descripcion">
+        <br>
+        <label for="informacion">Información:</label>
+        <input type="text" name="informacion" id="informacion">
+        <br>
+        <label for="valoracion">Valoración:</label>
+        <input type="number" name="valoracion" id="valoracion">
+        <br>
+        <label for="foto">Foto:</label>
+        <input type="file" name="foto" id="foto">
+        <br>
+        <label for="facultad">Facultad:</label>
+        <select name="facultad" id="facultad">
+            {% for facultad in facultades %}
+                <option value="{{ facultad.id }}">{{ facultad.nombre }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <input type="submit" value="Guardar">
+    </form>
+</body>
+</html>

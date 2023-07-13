@@ -1,6 +1,6 @@
 
 from django.db import models
-
+from .utils import get_image_path
 class Mapa(models.Model):
     nombre = models.CharField(max_length=30)
     grafo = models.JSONField()
@@ -12,6 +12,7 @@ class Facultad(models.Model):
     nombre = models.CharField(max_length=100)
     sigla = models.CharField(max_length=100)
     decano = models.CharField(max_length=100)
+    foto = models.ImageField(upload_to=get_image_path)
     mapa = models.ForeignKey(Mapa, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -37,11 +38,12 @@ class Punto(models.Model):
         return self.codigo
 
 class Bloque(Punto):
-    nomenclatura = models.CharField(max_length=100)
-    descripcion_bloque = models.CharField(max_length=100)
+    informacion = models.CharField(max_length=100)
+    valoracion = models.IntegerField(default=0)
+    foto = models.ImageField(upload_to=get_image_path)
 
     def __str__(self):
-        return self.nomenclatura
+        return self.codigo
 
 class Conexion(models.Model):
     nodo_origen = models.ForeignKey('Punto', on_delete=models.CASCADE, related_name='conexiones_salientes')
