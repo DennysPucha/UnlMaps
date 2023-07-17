@@ -18,9 +18,9 @@
 </form>
 
 {% if start_node and end_node and distance and path %}
-<p>La distancia más corta entre {{ start_node }} y {{ end_node }} es: {{ distance }} metros.</p>
-<p>Camino más corto: {% for node in path %}{{ node }} {% endfor %}</p>
+  <p>La distancia más corta entre {{ start_node }} y {{ end_node }} es: {{ distance|floatformat:2 }} metros.</p>
+  <p>Camino más corto: {% for node in path %}{{ node }} {% endfor %}</p>
 {% else %}
-<p>No se encontró una distancia válida.</p>
-<a href="{% url 'crear_conexion' %}">Crear Conexión</a>
+  <p>No se encontró una distancia válida.</p>
+  <a href="{% url 'crear_conexion' %}">Crear Conexión</a>
 {% endif %}

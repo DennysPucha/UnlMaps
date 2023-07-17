@@ -9,3 +9,4 @@ def get_image_path(instance, filename):
 
     # Devolver la ruta completa donde se guardará el archivo
     return os.path.join('fotos/', unique_filename)
+

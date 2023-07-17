@@ -6,6 +6,7 @@ from unlMaps.models import Conexion
 
 
 def calcular_distancia(lat1, alt1, lat2, alt2):
+
     R = 6371000.0  # Radio de la Tierra en metros
 
     lat1_rad = radians(lat1)
@@ -17,7 +18,7 @@ def calcular_distancia(lat1, alt1, lat2, alt2):
     a = sin(dlat / 2) ** 2 + cos(lat1_rad) * cos(lat2_rad) * sin(dalt / 2) ** 2
     c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
-    distance = (R * c)*0.243
+    distance = (R * c) * 0.243
     return distance
 
 
