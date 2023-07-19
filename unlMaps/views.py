@@ -207,6 +207,3 @@ def actualizar_grafo():
 
     # Imprimir el JSON del mapa en la consola
     print(json.dumps(json_actualizado, indent=4))
-
-def pag_404_not_found(request, exception, template_name="templates/404.html"):
-    return render(request, template_name, status=404)
