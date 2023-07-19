@@ -1,5 +1,8 @@
+from django.contrib.auth import logout, authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse, reverse_lazy
 
-from .models import Punto, Conexion, Mapa
+from .models import Punto, Conexion, Mapa, Cuenta
 from .algoritmos.algoritmo import crear_grafo, dijkstra
 from django.shortcuts import render, redirect
 from .models import Bloque, Punto, Facultad
@@ -129,8 +132,9 @@ def crear_bloque(request):
     facultades = Facultad.objects.all()
     return render(request, 'crear_bloque.html', {'facultades': facultades})
 
-
+@login_required
 def crear_punto(request):
+    print(request.user)
     if request.method == 'POST':
         # Obtener los datos del formulario
         codigo = request.POST['codigo']
@@ -161,6 +165,7 @@ def crear_punto(request):
     # Si la solicitud es GET, renderizar el formulario
     facultades = Facultad.objects.all()
     return render(request, 'crear_punto.html', {'facultades': facultades})
+
 import json
 
 
@@ -207,3 +212,27 @@ def actualizar_grafo():
 
     # Imprimir el JSON del mapa en la consola
     print(json.dumps(json_actualizado, indent=4))
+
+
+
+def iniciar_sesion(request):
+    if request.method == 'POST':
+        usuario = request.POST['usuario']
+        contrasenia = request.POST['password']
+        user = authenticate(request, username=usuario, password=contrasenia)
+        if user is not None:
+            login(request, user)
+            return redirect('inicio')  # Reemplaza 'inicio' con el nombre de la vista a la que deseas redirigir después del inicio de sesión
+        else:
+            error_message = "Credenciales inválidas. Inténtalo nuevamente."
+            return render(request, 'login.html', {'error_message': error_message})
+
+    return render(request, 'login.html')
+
+def inicio(request):
+    # Lógica de la vista de inicio
+    return render(request, 'inicio.html')
+
+def cerrar_sesion(request):
+    logout(request)
+    return redirect(reverse_lazy('login'))

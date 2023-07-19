@@ -22,7 +22,7 @@ from django.urls import path
 
 from ProyectoIntegrador import settings
 from unlMaps import views
-
+from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('crear-conexion/', views.crear_conexion, name='crear_conexion'),
     path('calcular-distancia/', views.calcular_distancia, name='calcular_distancia'),
@@ -30,4 +30,7 @@ urlpatterns = [
     path('crear_bloque/', views.crear_bloque, name='crear_bloque'),
     path('crear_punto/', views.crear_punto, name='crear_punto'),
     path('admin/', admin.site.urls),
+    path('login/', views.iniciar_sesion, name='login'),
+    path('inicio/', views.inicio, name='inicio'),
+    path('logout/', views.cerrar_sesion, name='logout'),
 ]
