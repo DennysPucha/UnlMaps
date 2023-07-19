@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>UNLMAPS</title>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Barra superior con Buscador y Selector -->
+        <div class="row my-3">
+            <div class="col-md-2">
+                <img src="ruta_de_tu_logo.png" alt="Logo" width="100">
+            </div>
+            <div class="col-md-4">
+                <form action="#" class="input-group">
+                    <input type="text" class="form-control" placeholder="Buscar...">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">Buscar</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-3">
+                <select class="form-control">
+                    {% for facultad in facultades %}
+                        <option value="{{ facultad.id }}">{{ facultad.nombre }}</option>
+                    {% endfor %}
+                    <option value="opcion1">Bloque</option>
+                    <option value="opcion2">Facultad</option>
+                </select>
+
+            </div>
+        </div>
+
+        <!-- Fila con dos columnas -->
+        <div class="row">
+            <!-- Columna para Recuadro 1 y Recuadro 3 -->
+            <div class="col-md-4">
+                <!-- Recuadro 1 -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">¿A dónde quieres ir?</h5>
+                        <input type="text" class="form-control" placeholder="Seleccione origen...">
+                        <p class="card-text"></p>
+                        <input type="text" class="form-control" placeholder="Seleccione destino...">
+                        <p class="card-text"></p>
+                        <button class="btn btn-primary" type="submit">Buscar ruta</button>
+                    </div>
+                </div>
+
+                <!-- Recuadro 3 -->
+                <div class="card">
+                    <div class="card-body">
+                         <h5 class="card-title">Información del bloque</h5>
+                        <p class="card-text">Info</p>
+                        <p class="card-text">Info</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna para Recuadro 2 -->
+            <div class="col-md-8">
+                <!-- Recuadro 2 -->
+                <div class="card">
+                    <div class="card-body" id="zoom-container">
+                        <h5 class="card-title">Mapa universitario</h5>
+                        <img id="zoom-image" src="../media/fotos/Campus.jpg" alt="Imagen" width="500">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
+</body>
+
+</html>

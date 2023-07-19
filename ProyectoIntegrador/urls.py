@@ -30,4 +30,5 @@ urlpatterns = [
     path('crear_bloque/', views.crear_bloque, name='crear_bloque'),
     path('crear_punto/', views.crear_punto, name='crear_punto'),
     path('admin/', admin.site.urls),
+    path('vistaUsuario/',views.selector,name='Selector'),
 ]

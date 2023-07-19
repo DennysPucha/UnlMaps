@@ -90,7 +90,9 @@ def crear_objeto(request):
 def admin(request):
     facultades = Facultad.objects.all()
     return render(request, 'admin.html', {'facultades': facultades})
-
+def selector(request):
+    facultades = Facultad.objects.all()
+    return render(request, 'vistaUsuario.html', {'facultades': facultades})
 def crear_bloque(request):
     if request.method == 'POST':
         # Obtener los datos del formulario
