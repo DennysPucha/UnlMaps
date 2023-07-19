@@ -3,7 +3,8 @@ from .models import Punto, Conexion, Mapa
 from .algoritmos.algoritmo import crear_grafo, dijkstra
 from django.shortcuts import render, redirect
 from .models import Bloque, Punto, Facultad
-
+from django.template import RequestContext
+from django.shortcuts import render
 from .algoritmos.algoritmo import calcular_distancia as ca
 
 def crear_conexion(request):
@@ -90,41 +91,6 @@ def admin(request):
     facultades = Facultad.objects.all()
     return render(request, 'admin.html', {'facultades': facultades})
 
-
-# def crear_bloque(request):
-#     if request.method == 'POST':
-#         # Obtener los datos del formulario
-#         codigo = request.POST['codigo']
-#         latitud = request.POST['latitud']
-#         longitud = request.POST['longitud']
-#         descripcion = request.POST['descripcion']
-#         informacion = request.POST['informacion']
-#         valoracion = request.POST['valoracion']
-#         foto = request.FILES['foto']
-#         facultad_id = request.POST['facultad']
-#
-#         # Obtener la facultad seleccionada
-#         facultad = Facultad.objects.get(id=facultad_id)
-#
-#         # Crear el objeto Bloque y guardar en la base de datos
-#         bloque = Bloque(
-#             codigo=codigo,
-#             latitud=latitud,
-#             longitud=longitud,
-#             descripcion=descripcion,
-#             informacion=informacion,
-#             valoracion=valoracion,
-#             foto=foto,
-#             facultad=facultad
-#         )
-#         bloque.save()
-#
-#         # Redireccionar a la página de administración o la página deseada
-#         return redirect('/')
-#
-#     # Si la solicitud es GET, renderizar el formulario
-#     facultades = Facultad.objects.all()
-#     return render(request, 'crear_bloque.html', {'facultades': facultades})
 def crear_bloque(request):
     if request.method == 'POST':
         # Obtener los datos del formulario
@@ -163,34 +129,7 @@ def crear_bloque(request):
     facultades = Facultad.objects.all()
     return render(request, 'crear_bloque.html', {'facultades': facultades})
 
-# def crear_punto(request):
-#     if request.method == 'POST':
-#         # Obtener los datos del formulario
-#         codigo = request.POST['codigo']
-#         latitud = request.POST['latitud']
-#         longitud = request.POST['longitud']
-#         descripcion = request.POST['descripcion']
-#         facultad_id = request.POST['facultad']
-#
-#         # Obtener la facultad seleccionada
-#         facultad = Facultad.objects.get(id=facultad_id)
-#
-#         # Crear el objeto Punto y guardar en la base de datos
-#         punto = Punto(
-#             codigo=codigo,
-#             latitud=latitud,
-#             longitud=longitud,
-#             descripcion=descripcion,
-#             facultad=facultad
-#         )
-#         punto.save()
-#
-#         # Redireccionar a la página de administración o la página deseada
-#         return redirect('/')
-#
-#     # Si la solicitud es GET, renderizar el formulario
-#     facultades = Facultad.objects.all()
-#     return render(request, 'crear_punto.html', {'facultades': facultades})
+
 def crear_punto(request):
     if request.method == 'POST':
         # Obtener los datos del formulario
@@ -268,3 +207,6 @@ def actualizar_grafo():
 
     # Imprimir el JSON del mapa en la consola
     print(json.dumps(json_actualizado, indent=4))
+
+def pag_404_not_found(request, exception, template_name="templates/404.html"):
+    return render(request, template_name, status=404)
