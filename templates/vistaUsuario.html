@@ -12,19 +12,13 @@
     <div class="container">
         <!-- Barra superior con Buscador y Selector -->
         <div class="row my-3">
+
             <div class="col-md-2">
                 <img src="ruta_de_tu_logo.png" alt="Logo" width="100">
             </div>
-            <div class="col-md-4">
-                <form action="#" class="input-group">
-                    <input type="text" class="form-control" placeholder="Buscar...">
-                    <div class="input-group-append">
-                        <button class="btn btn-primary" type="submit">Buscar</button>
-                    </div>
-                </form>
-            </div>
+
             <div class="col-md-3">
-                <select class="form-control">
+                <select class="form-control" name="selector" id="selector">
                     {% for facultad in facultades %}
                         <option value="{{ facultad.id }}">{{ facultad.nombre }}</option>
                     {% endfor %}
@@ -33,6 +27,15 @@
                 </select>
 
             </div>
+            <div class="col-md-4">
+                <form action="#" class="input-group">
+                    <input type="text" class="form-control" placeholder="Buscar..."name="buscar" id="buscar">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">Buscar</button>
+                    </div>
+                </form>
+            </div>
+
         </div>
 
         <!-- Fila con dos columnas -->
@@ -54,7 +57,12 @@
                 <!-- Recuadro 3 -->
                 <div class="card">
                     <div class="card-body">
-                         <h5 class="card-title">Información del bloque</h5>
+                        <h5 class="card-title">Información del bloque</h5>
+                        <p name="busca" id="busca">
+                            {% for bloque in bloque %}
+                                 <option value="{{ bloque.id }}">{{ bloque.codigo }}</option>
+                            {% endfor %}
+                        </p>
                         <p class="card-text">Info</p>
                         <p class="card-text">Info</p>
                     </div>
@@ -67,13 +75,22 @@
                 <div class="card">
                     <div class="card-body" id="zoom-container">
                         <h5 class="card-title">Mapa universitario</h5>
-                        <img id="zoom-image" src="../media/fotos/Campus.jpg" alt="Imagen" width="500">
+                        <img id="zoom-image" src="Recursos/errorNodo.png" alt="Imagen" width="500">
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+            function generarNumeroAleatorio() {
+                // Generar un número aleatorio entre 1 y 100
+                const numeroAleatorio = Math.floor(Math.random() * 100) + 1;
 
+                // Mostrar el número en la tarjeta
+                const randomNumberElement = document.getElementById('random-number');
+                randomNumberElement.textContent = numeroAleatorio;
+            }
+        </script>
 
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

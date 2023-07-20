@@ -93,6 +93,26 @@ def admin(request):
 def selector(request):
     facultades = Facultad.objects.all()
     return render(request, 'vistaUsuario.html', {'facultades': facultades})
+
+
+
+def buscar(request):
+
+    if request.method == 'POST':
+        selector = request.POST['selector']
+        buscar = request.POST['buscar']
+
+        if selector == 'Bloque':
+            # Buscar todos los bloques que coincidan con la entrada de búsqueda
+            bloques_encontrados = Bloque.objects.filter(codigo=buscar)
+        else:
+            # Buscar todos los bloques que coincidan con la facultad
+            bloques_encontrados = Bloque.objects.filter(facultad__nombre=buscar)
+
+    return render(request, 'vistaUsuario.html', {'bloques_encontrados': bloques_encontrados})
+
+
+
 def crear_bloque(request):
     if request.method == 'POST':
         # Obtener los datos del formulario
@@ -164,7 +184,6 @@ def crear_punto(request):
     facultades = Facultad.objects.all()
     return render(request, 'crear_punto.html', {'facultades': facultades})
 import json
-
 
 def actualizar_grafo():
     # Obtener el grafo existente desde el objeto Mapa
