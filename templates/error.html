@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="es">
   <head>
@@ -19,7 +20,7 @@
           <p class="font-weight-bold mt-3">Los nodos de inicio o fin seleccionados no existen en el grafo. 
             <br>Por favor, verifica los nodos seleccionados e intenta nuevamente.
           </p>
-          <img src="./Recursos/errorNodo.png" class="img-fluid" style="max-width: 25%;" alt="...">
+          <img src="{% static 'Recursos/errorNodo.png' %}" class="img-fluid" style="max-width: 25%;" alt="...">
         </div>
       </div>
     </div>

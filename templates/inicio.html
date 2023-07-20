@@ -1,0 +1,35 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <link rel="shortcut icon" href="#" />
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Inicio</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+
+    <!-- Hoja de Estilos de Sweet Alert -->
+</head>
+
+<body>
+    <div id="inicio">
+        <h2>Bienvenido</h2>
+        <p>¡Has iniciado sesión exitosamente!</p>
+
+        <!-- Botón de cierre de sesión -->
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Cerrar sesión</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+
+</html>
