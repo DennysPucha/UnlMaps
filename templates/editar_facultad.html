@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"
+        integrity="sha512-/12X9/KcvG3Bz7zWZ4zYyURhM7K8Dv9XkX1FRA3yF8+2x/ZnpbFRnS3aUpRpIrw38xxiE6OeDucwHqmbwwRMQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Editar Facultad</title>
+</head>
+
+<style>
+    body {
+        background-color: #0d6efd;
+    }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .form-container {
+        max-width: 400px;
+        width: 100%;
+        background-color: #c5e8ef;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .alert-message {
+        position: fixed;
+        top: 50%;
+        left: 20px; /* Ajustar la distancia del mensaje al borde izquierdo */
+        transform: translateY(-50%);
+        padding: 10px;
+        background-color: #f8d7da; /* Color de fondo para los mensajes de error */
+        border-radius: 10px;
+        width: 300px; /* Ancho del mensaje de alerta */
+        z-index: 9999;
+        opacity: 1;
+        transition: opacity 1s ease; /* Transición de opacidad */
+    }
+
+    .messages li {
+        margin: 5px 0;
+        list-style: none;
+    }
+    .alert-message.hide {
+        display: none;
+    }
+</style>
+
+<body>
+    {% block content %}
+    <div class="container">
+        <div class="form-container">
+            <h2 class="mb-4">Editar Facultad</h2>
+            <form id="editarFacultadForm" method="post" enctype="multipart/form-data"
+                action="{% url 'editar_facultad' facultad_id=facultad.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="editar_facultad_id" value="{{ facultad.id }}">
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre:</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required
+                        value="{{ facultad.nombre }}">
+                </div>
+                <div class="mb-3">
+                    <label for="sigla" class="form-label">Sigla:</label>
+                    <input type="text" class="form-control" id="sigla" name="sigla" required
+                        value="{{ facultad.sigla }}">
+                </div>
+                <div class="mb-3">
+                    <label for="decano" class="form-label">Decano:</label>
+                    <input type="text" class="form-control" id="decano" name="decano" required
+                        value="{{ facultad.decano }}">
+                </div>
+                <div class="mb-3">
+                    <label for="foto" class="form-label">Foto:</label>
+                        <input type="text" class="form-control" id="foto" name="foto" value="{{ foto_url }}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="foto" class="form-label">Cambiar Foto:</label>
+                        <input type="file" class="form-control" id="foto" name="foto">
+                </div>
+                {% if messages %}
+                    <div class="alert-message" style="background-color: #c5e8ef">
+                        <ul class="messages">
+                            {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                <div class="modal-footer">
+                     <a href="{% url 'gestionar_facultades' %}" class="btn btn-secondary" id="cancelarEditar">Cancelar</a>
+                    <button type="submit" class="btn btn-primary" id="actualizarFacultad">Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% endblock %}
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Ocultar el mensaje de alerta después de 3 segundos
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('.alert-message').hide();
+            }, 3000);
+        });
+    </script>
+</body>
+
+</html>

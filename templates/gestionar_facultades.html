@@ -1,0 +1,275 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"
+        integrity="sha512-/12X9/KcvG3Bz7zWZ4zYyURhM7K8Dv9XkX1FRA3yF8+2x/ZnpbFRnS3aUpRpIrw38xxiE6OeDucwHqmbwwRMQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Gestionar Facultades</title>
+    <style>
+        body {
+            background-color: #0d6efd;
+        }
+
+        .divtitulo {
+            display: flex;
+            position: relative;
+        }
+
+        .alert-fixed {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 1000;
+            margin-top: 5px;
+        }
+
+        .navbar-toggler-hidden {
+            display: none;
+        }
+
+        @media (max-width: 991.98px) {
+            .navbar-nav {
+                gap: 0;
+
+            }
+
+            .navbar-nav li {
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Gestionar Facultades</a>
+            <button class="navbar-toggler navbar-toggler-hidden" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Página de Inicio</a>
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav">
+                    <li class="nav-item" style="padding-left: 25px;">
+                        <form class="d-flex" id="formBuscar" action="{% url 'buscar_facultades' %}" method="GET">
+                            <input class="form-control me-2" type="search" id="searchText" name="search_text" placeholder="Buscar Facultades" aria-label="Buscar">
+                            <button class="btn btn-outline-light" type="submit">Buscar</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <!-- Lista de facultades (parte izquierda) -->
+                <div class="col-lg-8 col-md-12">
+                    <div class="divtitulo">
+                        <h2>Lista de facultades</h2>
+                        <button class="btn btn-primary btn-anadir" style="margin-bottom: 1em; margin-left: 2em; background-color: rgb(17, 218, 117);"
+                            data-bs-toggle="modal" data-bs-target="#modalAgregarFacultad">Añadir facultad</button>
+                    </div>
+                    <!-- Agrega el elemento div con id="listaFacultades" aquí -->
+                    <div id="listaFacultades">
+                        <!-- Aquí se agregarán los elementos de la lista de facultades dinámicamente -->
+                        {% for facultad in facultades %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center"
+                            data-facultad-id="{{ facultad.id }}" data-facultad-nombre="{{ facultad.nombre }}"
+                            data-facultad-sigla="{{ facultad.sigla }}" data-facultad-decano="{{ facultad.decano }}">
+                            {{ facultad.nombre }}
+                            <div style="display: flex">
+                                <a href="{% url 'editar_facultad' facultad_id=facultad.id %}" class="btn btn-primary me-2">Editar <i class="fas fa-edit"></i></a>
+                                <button class="btn btn-danger btn-eliminar-facultad"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEliminarFacultad"
+                                    data-facultad-id="{{ facultad.id }}"
+                                    data-facultad-nombre="{{ facultad.nombre }}">
+                                    Eliminar <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </div>
+                </div>
+            <!-- Contenedor de la imagen o formulario (parte derecha) -->
+            <div class="col-lg-4 col-md-12" id="container">
+                <h2>UnlMaps</h2>
+                <img src="{% static 'imagenes/Fondo.jpg' %}" class="img-fluid" alt="Imagen">
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalAgregarFacultad" tabindex="-1" aria-labelledby="modalAgregarFacultadLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAgregarFacultadLabel">Añadir Facultad</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="facultadForm" method="POST" enctype="multipart/form-data"
+                        action="{% url 'gestionar_facultades' %}">
+                        {% csrf_token %}
+                        <!-- Campos del formulario para añadir facultades -->
+                        <div class="form-group">
+                            <label for="nombre">Nombre:</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre">
+                        </div>
+                        <div class="form-group">
+                            <label for="sigla">Sigla:</label>
+                            <input type="text" class="form-control" id="sigla" name="sigla">
+                        </div>
+                        <div class="form-group">
+                            <label for="decano">Decano:</label>
+                            <input type="text" class="form-control" id="decano" name="decano">
+                        </div>
+                        <div class="form-group" style="padding-bottom: 2em;">
+                            <label for="foto">Foto:</label>
+                            <input type="file" class="form-control" id="foto" name="foto">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <!-- Cambiamos el id a "guardarAñadirFacultad" para el botón "Guardar" del formulario de añadir facultades -->
+                            <input type="submit" class="btn btn-primary" id="guardarAñadirFacultad" value="Guardar">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <div class="container mt-3">
+              <ul class="messages">
+                {% for message in messages %}
+                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalEliminarFacultad" tabindex="-1" aria-labelledby="modalEliminarFacultadLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEliminarFacultadLabel">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Aquí agregamos el mensaje de confirmación de eliminación -->
+                <p>¿Estás seguro que deseas eliminar la facultad "<span id="facultadNombreEliminar"></span>"?</p>
+            </div>
+            <div class="modal-footer">
+                <!-- Botón de "Cancelar" que cierra el modal sin realizar ninguna acción -->
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <!-- Botón de "Eliminar" que confirma la acción y envía el formulario de eliminación -->
+                <form id="formEliminarFacultad" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'gestionar_facultades.js' %}"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Obtener el botón de eliminar y el modal
+            var btnEliminarFacultad = document.getElementsByClassName("btn-eliminar-facultad");
+            var modalEliminarFacultad = document.getElementById("modalEliminarFacultad");
+            var formEliminarFacultad = document.getElementById("formEliminarFacultad");
+
+            // Agregar un evento click a cada botón de eliminar
+            Array.from(btnEliminarFacultad).forEach(function (btn) {
+                btn.addEventListener("click", function () {
+                    var facultadId = btn.getAttribute("data-facultad-id");
+                    var facultadNombre = btn.getAttribute("data-facultad-nombre");
+
+                    // Actualizar el contenido del modal con el nombre de la facultad
+                    modalEliminarFacultad.querySelector(".modal-body").textContent = `¿Estás seguro que deseas eliminar la facultad "${facultadNombre}"?`;
+
+                    // Actualizar el atributo action del formulario para que apunte a la URL de eliminación correcta
+                    formEliminarFacultad.action = `/eliminar_facultad/${facultadId}/`;
+                });
+            });
+
+            // Agregar un evento click al botón de "Eliminar" dentro del modal
+            var confirmarEliminarFacultad = document.getElementById("confirmarEliminarFacultad");
+            confirmarEliminarFacultad.addEventListener("click", function () {
+                formEliminarFacultad.submit(); // Enviar el formulario de eliminación al hacer clic en "Eliminar"
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Obtener el formulario de búsqueda y la lista de facultades
+            const formBuscar = document.getElementById("formBuscar");
+            const listaFacultades = document.getElementById("listaFacultades");
+
+            // Agregar un evento submit al formulario de búsqueda
+            formBuscar.addEventListener("submit", function (event) {
+                event.preventDefault(); // Evitar que el formulario se envíe por defecto
+                const searchText = document.querySelector("[name='search_text']").value; // Obtener el texto de búsqueda
+
+                // Hacer una petición AJAX al servidor para obtener la lista de facultades actualizada
+                fetch(`/buscar_facultades/?search_text=${searchText}`, {
+                    method: "GET",
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest" // Indicar que es una petición AJAX
+                    }
+                })
+                .then(response => response.text()) // Convertir la respuesta en texto
+                .then(data => {
+                    // Actualizar la lista de facultades con los resultados obtenidos
+                    listaFacultades.innerHTML = data;
+                })
+                .catch(error => {
+                    console.error("Error al buscar facultades:", error);
+                });
+            });
+        });
+    </script>
+    <script>
+      $(document).ready(function () {
+        {% if messages %}
+          // Mostrar la ventana modal al cargar la página
+          $('#alertModal').modal('show');
+
+          // Ocultar la ventana modal después de 3 segundos
+          setTimeout(function () {
+            $('#alertModal').modal('hide');
+          }, 3000);
+        {% endif %}
+      });
+</script>
+
+</body>
+
+</html>

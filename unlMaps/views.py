@@ -1,12 +1,14 @@
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseBadRequest
 from django.urls import reverse, reverse_lazy
+from django.contrib import messages
 
 from .models import Punto, Conexion, Mapa, Cuenta
 from .algoritmos.algoritmo import crear_grafo, dijkstra
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Bloque, Punto, Facultad
-from django.template import RequestContext
+
 from django.shortcuts import render
 from .algoritmos.algoritmo import calcular_distancia as ca
 
@@ -230,9 +232,82 @@ def iniciar_sesion(request):
     return render(request, 'login.html')
 
 def inicio(request):
-    # Lógica de la vista de inicio
     return render(request, 'inicio.html')
 
 def cerrar_sesion(request):
     logout(request)
     return redirect(reverse_lazy('login'))
+
+def index(request):
+    return render(request, 'index.html')
+
+
+def gestionar_facultades(request):
+    facultades = Facultad.objects.all()
+
+    if request.method == 'POST':
+        # Si hay una solicitud POST, significa que se está enviando un formulario para agregar una nueva facultad
+        nombre = request.POST.get('nombre')
+        sigla = request.POST.get('sigla')
+        decano = request.POST.get('decano')
+        foto = request.FILES.get('foto')
+        mapa = Mapa.objects.first()
+
+        # Validar que los campos requeridos no estén vacíos
+        if not nombre or not sigla or not decano or not foto:
+            messages.error(request, "Por favor, complete todos los campos.")
+            return redirect('gestionar_facultades')
+
+        # Verificar que el archivo de foto sea una imagen válida
+        if not foto.name.lower().endswith(('.jpg', '.jpeg', '.png', '.gif')):
+            messages.error(request, "El archivo de foto debe ser una imagen en formato JPG, JPEG, PNG o GIF.")
+            return redirect('gestionar_facultades')
+
+        # Crear una nueva facultad con los valores del formulario y guardarla en la base de datos
+        facultad = Facultad(nombre=nombre, sigla=sigla, decano=decano, foto=foto, mapa=mapa)
+        facultad.save()
+
+        # Mostrar mensaje de éxito si se agregó la facultad correctamente
+        messages.success(request, "Nueva facultad creada correctamente.")
+        return redirect('gestionar_facultades')
+
+    return render(request, 'gestionar_facultades.html', {'facultades': facultades})
+def editar_facultad(request, facultad_id):
+    facultad = get_object_or_404(Facultad, id=facultad_id)
+
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        sigla = request.POST.get('sigla')
+        decano = request.POST.get('decano')
+        foto = request.FILES.get('foto')
+
+        # Verificar que el archivo de foto sea una imagen válida
+        if foto and not foto.name.lower().endswith(('.jpg', '.jpeg', '.png', '.gif')):
+            messages.error(request, "El archivo de foto debe ser una imagen en formato JPG, JPEG, PNG o GIF.")
+            return redirect('editar_facultad', facultad_id=facultad_id)
+
+        # Resto del código para actualizar la facultad y guardarla en la base de datos
+
+        # Mostrar mensaje de éxito si la actualización fue exitosa
+        messages.success(request, "La facultad ha sido actualizada correctamente.")
+        return redirect('gestionar_facultades')
+
+    else:
+        foto_url = facultad.foto.url if facultad.foto else None
+        return render(request, 'editar_facultad.html', {'facultad': facultad, 'foto_url': foto_url})
+
+
+def eliminar_facultad(request, facultad_id):
+    facultad = get_object_or_404(Facultad, id=facultad_id)
+
+    if request.method == 'POST':
+        facultad.delete()
+        return redirect('gestionar_facultades')
+
+    return render(request, 'eliminar_facultad.html', {'facultad': facultad})
+
+def buscar_facultades(request):
+    if request.method == 'GET':
+        search_text = request.GET.get('search_text')
+        facultades = Facultad.objects.filter(nombre__icontains=search_text)
+        return render(request, 'resultados_busqueda_facultades.html', {'facultades': facultades})

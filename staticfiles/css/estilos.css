@@ -1,19 +1,18 @@
-body {
 
-    background-image: url("imagenes/Fondo.jpg");
+body {
     background-size: cover;
     background-position: center;
-    /* Otros estilos adicionales */
+
   }
 
-/* Estilos pagina admin*/
+
 #pag-inicio {
     margin: 0;
         padding: 0;
         background: linear-gradient(to right, #91da55, #59e9a1);
 }
 
-/* Estilos para la caja del Login */
+
 #login .container #login-row #login-column #login-box {
     /*Margen Superior */
     margin-top: 40px;
@@ -30,7 +29,7 @@ body {
     margin-right: auto;
 }
 
-/* Estilo para el texto del cuadro no funciono con Bootstrap :( */
+
 label[for="password"] {
     margin-left: 40px;
     font-family: Arial, Helvetica, sans-serif;
@@ -43,14 +42,14 @@ label[for="usuario"] {
     font-size: 18px;
 
 }
-/* Estilos para el campo de texto "usuario" */
+
 input#usuario {
     width: 320px;
     height: 35px;
     margin: 0 auto;
 }
 
-/* Estilos para el campo de texto "password" */
+
 input#password {
     width: 320px;
     height: 35px;

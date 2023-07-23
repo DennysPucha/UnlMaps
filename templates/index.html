@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentacion</title>
+    <link rel="stylesheet" href="{% static 'css/estilosIndex.css' %}">
+</head>
+
+<body>
+    <div id="pis">
+        <h1
+            style="color: rgb(255, 255, 255); font-family: monospace; text-align: center; padding-top: 15px; padding-bottom: 15px;">
+            SOBRE EL PROYECTO
+        </h1>
+        <!-- Boton para volver a Inicio -->
+        <button class="button" onclick="window.location.href='{% url 'login' %}';">
+            <img src="{% static 'imagenes/homev.png' %}">
+        </button>
+        <div class="subtitulo">
+            <h3>¿QUE ES UNLMAPS?</h3>
+        </div>
+        <div class="parrafo"  style="border-radius: 10px;">
+            <p>
+                Es una aplicación web para que los estudiantes y demás usuarios puedan guiarse en el campus
+                universitario
+                que proporciona a los estudiantes y visitantes una herramienta que les permita guiarse por el campus de
+                manera eficiente. Debido a la falta de orientación y la dificultad que experimentan las personas al
+                moverse
+                por el campus universitario. Muchos estudiantes y visitantes se pierden debido a la complejidad y
+                extensión
+                del campus, lo que puede resultar en retrasos, frustración y pérdida de tiempo. Esperamos presentar una
+                aplicación web que permita a los usuarios visualizar un mapa del campus y obtener la ruta más corta para
+                llegar a su destino deseado. Esta aplicación utilizará algoritmos de búsqueda y estructuras de datos
+                como
+                grafos y árboles para calcular de manera eficiente las rutas óptimas. Con esta solución, esperamos
+                mejorar
+                la experiencia de los estudiantes y visitantes en el campus universitario, facilitando su movilidad.
+            </p>
+            <figure class="img_parrafo">
+                <img src="{% static 'imagenes/estilo.png' %}">
+            </figure>
+        </div>
+        <div class="integrantes">
+            <h2>INTEGRANTES:</h2>
+        </div>
+        <div class="container">
+            <div class="card" style="background-color: #748FFC;">
+                <figure>
+                    <img src="{% static 'imagenes/usuario.png' %}">
+                </figure>
+                <div class="contenido">
+                    <h3 class="Nombre_In">Letty Rojas</h3>
+                    <p>Estudiante de la carrera de Ingeniería en Computación.
+                        <h4 class="Titulo_Ciclo">Cuarto Ciclo "A"</h4>
+                    </p>
+                    <p class="correo">letty.rojas@unl.edu.ec</p>
+                </div>
+            </div>
+            <div class="card" style="background-color: #5DFFD0;">
+                <figure>
+                    <img src="{% static 'imagenes/usuario.png' %}">
+                </figure>
+                <div class="contenido">
+                    <h3 class="Nombre_In">Dennys Pucha</h3>
+                    <p>Estudiante de la carrera de Ingeniería en Computación.
+                        <h4 class="Titulo_Ciclo">Cuarto Ciclo "A"</h4>
+                    </p>
+                    <p class="correo">dennys.pucha@unl.edu.ec</p>
+                </div>
+            </div>
+            <div class="card" style="background-color: #FFA94D;">
+                <figure>
+                    <<img src="{% static 'imagenes/usuario.png' %}">
+                </figure>
+                <div class="contenido">
+                    <h3 class="Nombre_In">Jaime Mendoza</h3>
+                    <p>Estudiante de la carrera de Ingeniería en Computación.
+                        <h4 class="Titulo_Ciclo">Cuarto Ciclo "A"</h4>
+                    </p>
+                    <p class="correo">jaime.mendoza@unl.edu.ec</p>
+                </div>
+            </div>
+            <div class="card" style="background-color: #D1FF7E;">
+                <figure>
+                    <img src="{% static 'imagenes/usuario.png' %}">
+                </figure>
+                <div class="contenido">
+                    <h3 class="Nombre_In">Cristian Armijos</h3>
+                    <p>Estudiante de la carrera de Ingeniería en Computación.
+                        <h4 class="Titulo_Ciclo">Cuarto Ciclo "A"</h4>
+                    </p>
+                    <p class="correo">cristian.e.armijos@unl.edu.ec</p>
+                </div>
+            </div>
+            <div class="card" style="background-color: #4DABF7;">
+                <figure>
+                    <img src="{% static 'imagenes/usuario.png' %}">
+                </figure>
+                <div class="contenido">
+                    <h3 class="Nombre_In">Jhonel Pesantes</h3>
+                    <p>Estudiante de la carrera de Ingeniería en Computación.
+                        <h4 class="Titulo_Ciclo">Cuarto Ciclo "A"</h4>
+                    </p>
+                    <p class="correo">angel.pesantes@unl.edu.ec</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<body>
+    <div id="materias">
+        <!-- Materias -->
+        <!-- ========================================================================================= -->
+        <div>
+            <h1 class="mat_rel">Materias Relacionadas:</h1>
+        </div>
+        <div class="container_materias">
+            <div class="card" style="background-color:rgb(38, 92, 173);">
+                <figure>
+                    <img src="{% static 'imagenes/ComplejidadComp.png' %}">
+                </figure>
+                <div class="contenido">
+                    <h3>Complejidad Computacional</h3>
+                    <p>
+                        Mediante el estudio de algoritmos y estructuras de datos, se busca comprender los límites y las
+                        capacidades de nuestro sistema, optimizando así la eficiencia y la resolución de
+                        problemas mediante algoritmos que mejoran la experiencia de los usuarios.
+                    </p>
+                </div>
+            </div>
+            <div class="card" style="background-color: rgb(63, 81, 181);">
+                <figure>
+                    <img src="{% static 'imagenes/DisSoft.png' %}">
+                </figure>
+                <div class="contenido">
+                    <h3>Diseño de Software</h3>
+                    <p>
+                        A través del estudio de principios de diseño, diagramas, patrones y metodologías, se busca
+                        desarrollar
+                        habilidades para diseñar software modular, escalable y mantenible para construir
+                        aplicaciones de calidad que cumplan con los requisitos del usuario.
+                    </p>
+                </div>
+            </div>
+            <div class="card" style="background-color: rgb(0, 160, 156);">
+                <figure>
+                    <img src="{% static 'imagenes/MetInves.png' %}">
+                </figure>
+                <div class="contenido">
+                    <h3>Metodología de la Investigación en Computacion</h3>
+                    <p>
+                        Proporciona herramientas y técnicas para investigaciones efectivas. El estudio de métodos
+                        científicos, recopilación, y desarrollo de habilidades para plantear preguntas de
+                        investigación, recolectar y analizar datos de manera correcta.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

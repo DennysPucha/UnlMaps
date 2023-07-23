@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestionar Bloques y Puntos</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Gestionar Bloques y Puntos</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#">Página de Inicio</a>
+          </li>
+        </ul>
+        <form class="d-flex">
+          <input class="form-control me-2" type="search" placeholder="Buscar Bloques y Puntos" aria-label="Buscar">
+          <button class="btn btn-outline-light" type="submit">Buscar</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid" style="padding-left: 3em;">
+    <div class="row">
+      <!-- Contenedor de la lista de objetos (parte izquierda) -->
+      <div class="col-lg-6 col-md-12" style="padding-bottom: 3em;">
+        <div class="divtitulo">
+          <h2>Bloques</h2>
+        </div>
+        <ul class="list-group">
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            Bloque 1
+            <button class="btn btn-primary btn-editar-bloque" data-bs-toggle="modal" data-bs-target="#modalEditarBloque">Editar <i class="fas fa-edit"></i></button>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            Bloque 2
+            <button class="btn btn-primary btn-editar-bloque" data-bs-toggle="modal" data-bs-target="#modalEditarBloque">Editar <i class="fas fa-edit"></i></button>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            Bloque 3
+            <button class="btn btn-primary btn-editar-bloque" data-bs-toggle="modal" data-bs-target="#modalEditarBloque">Editar <i class="fas fa-edit"></i></button>
+          </li>
+          <!-- Agrega aquí más elementos de la lista -->
+        </ul>
+      </div>
+
+      <!-- Contenedor de la lista de puntos (parte derecha) -->
+      <div class="col-lg-6 col-md-12" style="padding-bottom: 3em;">
+        <div class="divtitulo">
+          <h2>Puntos</h2>
+        </div>
+        <ul class="list-group">
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            Punto 1
+            <button class="btn btn-primary btn-editar-punto" data-bs-toggle="modal" data-bs-target="#modalEditarPunto">Editar <i class="fas fa-edit"></i></button>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            Punto 2
+            <button class="btn btn-primary btn-editar-punto" data-bs-toggle="modal" data-bs-target="#modalEditarPunto">Editar <i class="fas fa-edit"></i></button>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            Punto 3
+            <button class="btn btn-primary btn-editar-punto" data-bs-toggle="modal" data-bs-target="#modalEditarPunto">Editar <i class="fas fa-edit"></i></button>
+          </li>
+          <!-- Agrega aquí más elementos de la lista -->
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para editar bloques -->
+  <div class="modal fade" id="modalEditarBloque" tabindex="-1" aria-labelledby="modalEditarBloqueLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalEditarBloqueLabel">Editar Bloque</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="bloqueForm" method="post" enctype="multipart/form-data">
+            <!-- Campos del formulario para editar bloques -->
+            <div class="form-group">
+              <label for="codigoBloque">Código:</label>
+              <input type="text" class="form-control" id="codigoBloque" name="codigoBloque">
+            </div>
+            <div class="form-group">
+              <label for="latitudBloque">Latitud:</label>
+              <input type="text" class="form-control" id="latitudBloque" name="latitudBloque">
+            </div>
+            <div class="form-group">
+              <label for="longitudBloque">Longitud:</label>
+              <input type="text" class="form-control" id="longitudBloque" name="longitudBloque">
+            </div>
+            <div class="form-group">
+              <label for="descripcionBloque">Descripción:</label>
+              <input type="text" class="form-control" id="descripcionBloque" name="descripcionBloque">
+            </div>
+            <div class="form-group">
+              <label for="informacionBloque">Información:</label>
+              <input type="text" class="form-control" id="informacionBloque" name="informacionBloque">
+            </div>
+            <div class="form-group">
+              <label for="valoracionBloque">Valoración:</label>
+              <input type="number" class="form-control" id="valoracionBloque" name="valoracionBloque">
+            </div>
+            <div class="form-group">
+              <label for="fotoBloque">Foto:</label>
+              <input type="file" class="form-control" id="fotoBloque" name="fotoBloque">
+            </div>
+            <div class="form-group">
+              <label for="facultadBloque">Facultad:</label>
+              <select class="form-control" id="facultadBloque" name="facultadBloque">
+                <!-- Agrega opciones para la facultad -->
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary cancelarEdicion" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="guardarBloque">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para editar puntos -->
+  <div class="modal fade" id="modalEditarPunto" tabindex="-1" aria-labelledby="modalEditarPuntoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalEditarPuntoLabel">Editar Punto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="puntoForm" method="post">
+            <!-- Campos del formulario para editar puntos -->
+            <div class="form-group">
+              <label for="codigoPunto">Código:</label>
+              <input type="text" class="form-control" id="codigoPunto" name="codigoPunto">
+            </div>
+            <div class="form-group">
+              <label for="latitudPunto">Latitud:</label>
+              <input type="text" class="form-control" id="latitudPunto" name="latitudPunto">
+            </div>
+            <div class="form-group">
+              <label for="longitudPunto">Longitud:</label>
+              <input type="text" class="form-control" id="longitudPunto" name="longitudPunto">
+            </div>
+            <div class="form-group">
+              <label for="descripcionPunto">Descripción:</label>
+              <input type="text" class="form-control" id="descripcionPunto" name="descripcionPunto">
+            </div>
+            <div class="form-group">
+              <label for="facultadPunto">Facultad:</label>
+              <select class="form-control" id="facultadPunto" name="facultadPunto">
+                <!-- Agrega opciones para la facultad -->
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary cancelarEdicion" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="guardarPunto">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>

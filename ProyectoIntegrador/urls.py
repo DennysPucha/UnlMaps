@@ -33,4 +33,8 @@ urlpatterns = [
     path('login/', views.iniciar_sesion, name='login'),
     path('inicio/', views.inicio, name='inicio'),
     path('logout/', views.cerrar_sesion, name='logout'),
+    path('index/', views.index, name='index'),
+    path('gestionar_facultades/', views.gestionar_facultades, name='gestionar_facultades'),
+    path('editar_facultad/<int:facultad_id>/', views.editar_facultad, name='editar_facultad'),
+    path('buscar_facultades/', views.buscar_facultades, name='buscar_facultades'),
 ]
