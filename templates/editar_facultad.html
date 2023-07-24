@@ -5,10 +5,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"
-        integrity="sha512-/12X9/KcvG3Bz7zWZ4zYyURhM7K8Dv9XkX1FRA3yF8+2x/ZnpbFRnS3aUpRpIrw38xxiE6OeDucwHqmbwwRMQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+          integrity="sha512-/12X9/KcvG3Bz7zWZ4zYyURhM7K8Dv9XkX1FRA3yF8+2x/ZnpbFRnS3aUpRpIrw38xxiE6OeDucwHqmbwwRMQ=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <title>Editar Facultad</title>
 </head>
 
@@ -50,73 +50,119 @@
         margin: 5px 0;
         list-style: none;
     }
+
     .alert-message.hide {
         display: none;
     }
 </style>
 
 <body>
-    {% block content %}
+{% block content %}
     <div class="container">
         <div class="form-container">
             <h2 class="mb-4">Editar Facultad</h2>
             <form id="editarFacultadForm" method="post" enctype="multipart/form-data"
-                action="{% url 'editar_facultad' facultad_id=facultad.id %}">
+                  action="{% url 'editar_facultad' facultad_id=facultad.id %}">
                 {% csrf_token %}
                 <input type="hidden" name="editar_facultad_id" value="{{ facultad.id }}">
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre:</label>
                     <input type="text" class="form-control" id="nombre" name="nombre" required
-                        value="{{ facultad.nombre }}">
+                           value="{{ facultad.nombre }}">
                 </div>
                 <div class="mb-3">
                     <label for="sigla" class="form-label">Sigla:</label>
                     <input type="text" class="form-control" id="sigla" name="sigla" required
-                        value="{{ facultad.sigla }}">
+                           value="{{ facultad.sigla }}">
                 </div>
                 <div class="mb-3">
                     <label for="decano" class="form-label">Decano:</label>
                     <input type="text" class="form-control" id="decano" name="decano" required
-                        value="{{ facultad.decano }}">
+                           value="{{ facultad.decano }}">
                 </div>
                 <div class="mb-3">
                     <label for="foto" class="form-label">Foto:</label>
-                        <input type="text" class="form-control" id="foto" name="foto" value="{{ foto_url }}" readonly>
+                    <input type="text" class="form-control" id="foto" name="foto" value="{{ foto_url }}" readonly>
                 </div>
                 <div class="mb-3">
                     <label for="foto" class="form-label">Cambiar Foto:</label>
-                        <input type="file" class="form-control" id="foto" name="foto">
+                    <input type="file" class="form-control" id="foto" name="foto">
                 </div>
-                {% if messages %}
-                    <div class="alert-message" style="background-color: #c5e8ef">
-                        <ul class="messages">
-                            {% for message in messages %}
-                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endif %}
+
                 <div class="modal-footer">
-                     <a href="{% url 'gestionar_facultades' %}" class="btn btn-secondary" id="cancelarEditar">Cancelar</a>
+                    <a href="{% url 'gestionar_facultades' %}" class="btn btn-secondary"
+                       id="cancelarEditar">Cancelar</a>
                     <button type="submit" class="btn btn-primary" id="actualizarFacultad">Guardar cambios</button>
                 </div>
             </form>
         </div>
     </div>
+    {% if messages %}
+        <div class="modal fade" id="modalAlert" tabindex="-1" aria-labelledby="modalAlertLabel" aria-hidden="true"
+             data-message="{{ messages }}">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalAlertLabel">Mensaje de Alerta</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <ul class="list-group">
+                            {% for message in messages %}
+                                <li class="list-group-item{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="modal fade" id="modalAlert" tabindex="-1" aria-labelledby="modalAlertLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAlertLabel">Mensaje de Alerta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalAlertMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 
-    {% endblock %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Ocultar el mensaje de alerta después de 3 segundos
+    $(document).ready(function () {
+        setTimeout(function () {
+            $('.alert-message').hide();
+        }, 3000);
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+// Obtener el elemento de la ventana modal y el mensaje de alerta
+        const modalAlert = document.getElementById("modalAlert");
+        const modalAlertMessage = document.getElementById("modalAlertMessage");
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Ocultar el mensaje de alerta después de 3 segundos
-        $(document).ready(function () {
-            setTimeout(function () {
-                $('.alert-message').hide();
-            }, 3000);
-        });
-    </script>
+// Verificar si hay un mensaje de alerta
+        const message = modalAlert.getAttribute("data-message");
+        if (message) {
+            modalAlertMessage.textContent = message;
+            $('#modalAlert').modal('show'); // Mostrar la ventana modal
+        }
+    });
+</script>
 </body>
 
 </html>

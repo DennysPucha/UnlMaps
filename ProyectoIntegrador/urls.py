@@ -36,5 +36,11 @@ urlpatterns = [
     path('index/', views.index, name='index'),
     path('gestionar_facultades/', views.gestionar_facultades, name='gestionar_facultades'),
     path('editar_facultad/<int:facultad_id>/', views.editar_facultad, name='editar_facultad'),
+    path('editar_bloque/<int:bloque_id>/', views.editar_bloque, name='editar_bloque'),
+    path('editar_punto/<int:punto_id>/', views.editar_punto, name='editar_punto'),
     path('buscar_facultades/', views.buscar_facultades, name='buscar_facultades'),
+    path('buscar_bloques/', views.buscar_bloques, name='buscar_bloques'),  # URL para la búsqueda de bloques
+    path('buscar_puntos/', views.buscar_puntos, name='buscar_puntos'),  # URL para la búsqueda de puntos
+    path('eliminar_facultad/<int:facultad_id>/', views.eliminar_facultad, name='eliminar_facultad'),
+    path('gestionar_bloques_puntos/', views.gestionar_bloques_puntos, name='gestionar_bloques_puntos'),
 ]

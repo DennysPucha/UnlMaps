@@ -286,9 +286,13 @@ def editar_facultad(request, facultad_id):
             messages.error(request, "El archivo de foto debe ser una imagen en formato JPG, JPEG, PNG o GIF.")
             return redirect('editar_facultad', facultad_id=facultad_id)
 
-        # Resto del código para actualizar la facultad y guardarla en la base de datos
+        facultad.nombre = nombre
+        facultad.sigla = sigla
+        facultad.decano = decano
+        if foto:
+            facultad.foto = foto
 
-        # Mostrar mensaje de éxito si la actualización fue exitosa
+        facultad.save()
         messages.success(request, "La facultad ha sido actualizada correctamente.")
         return redirect('gestionar_facultades')
 
@@ -302,12 +306,134 @@ def eliminar_facultad(request, facultad_id):
 
     if request.method == 'POST':
         facultad.delete()
+        messages.success(request, "La facultad ha sido eliminada correctamente.")
         return redirect('gestionar_facultades')
 
     return render(request, 'eliminar_facultad.html', {'facultad': facultad})
+
+
+
+def gestionar_bloques_puntos(request):
+    bloques = Bloque.objects.all()
+    puntos = Punto.objects.exclude(bloque__isnull=False)
+    if 'success_message' in request.session:
+        success_message = request.session['success_message']
+        del request.session['success_message']
+    else:
+        success_message = None
+
+    return render(request, 'gestionar_bloques_puntos.html',{'bloques': bloques, 'puntos': puntos, 'success_message': success_message})
+
+def editar_bloque(request, bloque_id):
+    bloque = get_object_or_404(Bloque, id=bloque_id)
+
+    if request.method == 'POST':
+        # Obtener los datos del formulario
+        codigo = request.POST.get('codigo')
+        latitud = request.POST.get('latitud')
+        longitud = request.POST.get('longitud')
+        descripcion = request.POST.get('descripcion')
+        informacion = request.POST.get('informacion')
+        valoracion = request.POST.get('valoracion')
+        foto = request.FILES.get('foto')
+        facultad_id = request.POST.get('facultad')  # Obtener el ID de la facultad seleccionada
+
+        # Verificar que latitud y longitud sean números float válidos
+        try:
+            latitud = float(latitud)
+            longitud = float(longitud)
+        except ValueError:
+            messages.error(request, "Latitud y longitud deben ser valores numéricos.")
+            return redirect('editar_bloque', bloque_id=bloque_id)
+
+        # Verificar que la valoración esté en el rango permitido (1 al 5)
+        if not 1 <= int(valoracion) <= 5:
+            messages.error(request, "La valoración debe estar en el rango de 1 a 5.")
+            return redirect('editar_bloque', bloque_id=bloque_id)
+
+        # Verificar que el archivo de foto sea una imagen válida
+        if foto and not foto.name.lower().endswith(('.jpg', '.jpeg', '.png', '.gif')):
+            messages.error(request, "El archivo de foto debe ser una imagen en formato JPG, JPEG, PNG o GIF.")
+            return redirect('editar_bloque', bloque_id=bloque_id)
+
+        # Actualizar los campos del bloque
+        bloque.codigo = codigo
+        bloque.latitud = latitud
+        bloque.longitud = longitud
+        bloque.descripcion = descripcion
+        bloque.informacion = informacion
+        bloque.valoracion = valoracion
+
+        if foto:
+            bloque.foto = foto
+
+        # Actualizar el campo facultad usando el ID obtenido
+        bloque.facultad = get_object_or_404(Facultad, id=facultad_id)
+
+        bloque.save()
+
+        messages.success(request, "El bloque ha sido actualizado correctamente.")
+        return redirect('gestionar_bloques_puntos')
+
+    else:
+        foto_url = bloque.foto.url if bloque.foto else None
+        facultades = Facultad.objects.all()  # Obtener todas las facultades para mostrar en el formulario
+        return render(request, 'editar_bloque.html', {'bloque': bloque, 'foto_url': foto_url, 'facultades': facultades})
+
+def editar_punto(request, punto_id):
+    punto = get_object_or_404(Punto, id=punto_id)
+
+    if request.method == 'POST':
+        # Obtener los datos del formulario
+        codigo = request.POST.get('codigo')
+        latitud = request.POST.get('latitud')
+        longitud = request.POST.get('longitud')
+        descripcion = request.POST.get('descripcion')
+        facultad_id = request.POST.get('facultad')  # Obtener el ID de la facultad seleccionada
+
+        # Verificar que latitud y longitud sean números float válidos
+        try:
+            latitud = float(latitud)
+            longitud = float(longitud)
+        except ValueError:
+            messages.error(request, "Latitud y longitud deben ser valores numéricos.")
+            return redirect('editar_punto', punto_id=punto_id)
+
+        # Actualizar los campos del punto
+        punto.codigo = codigo
+        punto.latitud = latitud
+        punto.longitud = longitud
+        punto.descripcion = descripcion
+
+        # Actualizar el campo facultad usando el ID obtenido
+        punto.facultad = get_object_or_404(Facultad, id=facultad_id)
+
+        punto.save()
+
+        messages.success(request, "El punto ha sido actualizado correctamente.")
+        return redirect('gestionar_bloques_puntos')
+
+    else:
+        facultades = Facultad.objects.all()  # Obtener todas las facultades para mostrar en el formulario
+        return render(request, 'editar_punto.html', {'punto': punto, 'facultades': facultades})
 
 def buscar_facultades(request):
     if request.method == 'GET':
         search_text = request.GET.get('search_text')
         facultades = Facultad.objects.filter(nombre__icontains=search_text)
         return render(request, 'resultados_busqueda_facultades.html', {'facultades': facultades})
+
+def buscar_bloques(request):
+    if request.method == 'GET':
+        search_text = request.GET.get('search_text')
+        bloques = Bloque.objects.filter(codigo__icontains=search_text)
+        return render(request, 'resultados_busqueda_bloques.html', {'bloques': bloques})
+
+
+def buscar_puntos(request):
+    if request.method == 'GET':
+        search_text = request.GET.get('search_text')
+        puntos = Punto.objects.exclude(bloque__isnull=False)
+        puntos = puntos.filter(codigo__icontains=search_text)
+
+        return render(request, 'resultados_busqueda_puntos.html', {'puntos': puntos})

@@ -1,0 +1,18 @@
+{% if puntos %}
+  <!-- Lista de puntos -->
+  <ul class="list-group" id="listaPuntos">
+    {% for punto in puntos %}
+      <li class="list-group-item d-flex justify-content-between align-items-center"
+          data-punto-id="{{ punto.id }}" data-punto-codigo="{{ punto.codigo }}"
+          data-punto-latitud="{{ punto.latitud }}" data-punto-longitud="{{ punto.longitud }}"
+          data-punto-descripcion="{{ punto.descripcion }}">
+          {{ punto.codigo }}
+          <div style="display: flex">
+              <a href="{% url 'editar_punto' punto_id=punto.id %}" class="btn btn-primary me-2">Editar <i class="fas fa-edit"></i></a>
+          </div>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No se encontraron resultados de puntos.</p>
+{% endif %}
