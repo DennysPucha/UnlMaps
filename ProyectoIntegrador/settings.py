@@ -80,11 +80,15 @@ WSGI_APPLICATION = 'ProyectoIntegrador.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'BDUnlMaps',
-        'USER': 'Administrador',
-        'PASSWORD': 'administrador',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': 'defaultdb',
+        'USER': 'avnadmin',
+        'PASSWORD': 'AVNS_0mhjTjPLCAlw1pmUE_F',
+        'HOST': 'pg-13fddf4f-unl-4776.aivencloud.com',
+        'PORT': '14266',
+        'OPTIONS': {
+            'sslmode': 'require',
+            'sslrootcert': 'path/to/ca_certificate.pem',  # Ruta al archivo CA Certificate (opcional)
+        },
     }
 }
 
