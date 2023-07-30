@@ -227,29 +227,33 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Obtener el botón de eliminar y el modal
-        var btnEliminarFacultad = document.getElementsByClassName("btn-eliminar-facultad");
-        var modalEliminarFacultad = document.getElementById("modalEliminarFacultad");
-        var formEliminarFacultad = document.getElementById("formEliminarFacultad");
+        // Función para agregar el evento de clic al botón de eliminar facultad
+        function agregarEventoClickBotonEliminarFacultad() {
+            const btnEliminarFacultad = document.getElementsByClassName("btn-eliminar-facultad");
+            const modalEliminarFacultad = document.getElementById("modalEliminarFacultad");
+            const formEliminarFacultad = document.getElementById("formEliminarFacultad");
 
-        // Agregar un evento click a cada botón de eliminar
-        Array.from(btnEliminarFacultad).forEach(function (btn) {
-            btn.addEventListener("click", function () {
-                var facultadId = btn.getAttribute("data-facultad-id");
-                var facultadNombre = btn.getAttribute("data-facultad-nombre");
+            Array.from(btnEliminarFacultad).forEach(function (btn) {
+                btn.addEventListener("click", function () {
+                    const facultadId = btn.getAttribute("data-facultad-id");
+                    const facultadNombre = btn.getAttribute("data-facultad-nombre");
 
-                // Actualizar el contenido del modal con el nombre de la facultad
-                modalEliminarFacultad.querySelector(".modal-body").textContent = `¿Estás seguro que deseas eliminar la facultad "${facultadNombre}"?`;
+                    modalEliminarFacultad.querySelector(".modal-body").textContent = `¿Estás seguro que deseas eliminar la facultad "${facultadNombre}"?`;
 
-                // Actualizar el atributo action del formulario para que apunte a la URL de eliminación correcta
-                formEliminarFacultad.action = `/eliminar_facultad/${facultadId}/`;
+                    formEliminarFacultad.action = `/eliminar_facultad/${facultadId}/`;
+                });
             });
-        });
+        }
 
-        // Agregar un evento click al botón de "Eliminar" dentro del modal
-        var confirmarEliminarFacultad = document.getElementById("confirmarEliminarFacultad");
-        confirmarEliminarFacultad.addEventListener("click", function () {
-            formEliminarFacultad.submit(); // Enviar el formulario de eliminación al hacer clic en "Eliminar"
+        // Agregar el evento de clic a los botones de eliminar facultades cuando se carga la página
+        agregarEventoClickBotonEliminarFacultad();
+
+        // Obtener el contenedor de la lista de facultades
+        const listaFacultades = document.getElementById("listaFacultades");
+
+        // Agregar un evento al contenedor para detectar cambios y actualizar el evento de clic después de una búsqueda
+        listaFacultades.addEventListener("DOMSubtreeModified", function () {
+            agregarEventoClickBotonEliminarFacultad();
         });
     });
 </script>

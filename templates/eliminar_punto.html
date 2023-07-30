@@ -1,0 +1,14 @@
+<div class="modal-header">
+    <h5 class="modal-title" id="modalEliminarPuntoLabel">Confirmar Eliminación</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <p>¿Estás seguro que deseas eliminar el Punto "<span id="PuntoNombreEliminar"></span>"?</p>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <form id="formEliminarPunto" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+    </form>
+</div>

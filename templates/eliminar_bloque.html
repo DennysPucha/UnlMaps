@@ -1,0 +1,14 @@
+<div class="modal-header">
+    <h5 class="modal-title" id="modalEliminarBloqueLabel">Confirmar Eliminación</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <p>¿Estás seguro que deseas eliminar el Bloque "<span id="BloqueNombreEliminar"></span>"?</p>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <form id="formEliminarBloque" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+    </form>
+</div>

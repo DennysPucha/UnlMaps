@@ -1,295 +1,493 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestionar Bloques y Puntos</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionar Bloques y Puntos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
 </head>
 <body>
-  <style>
+<style>
     body {
-      background-color: #cff4fc;
+        background-color: #cff4fc;
     }
-  </style>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+</style>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
-      <a class="navbar-brand" href="#">Gestionar Bloques y Puntos</a>
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item" style="padding-right: 2em;">
-          <a class="nav-link" href="#">Página de Inicio</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
-
-
-  <div class="container-fluid" style="padding-left: 3em;">
-    <div class="row">
-      <!-- Contenedor de la lista de objetos (parte izquierda) -->
-      <div class="col-lg-6 col-md-12" style="padding-bottom: 3em;">
-        <div class="divtitulo">
-          <h2>Bloques</h2>
-        </div>
-
-        <!-- Nuevo formulario de búsqueda para Bloques -->
-        <form id="formBuscarBloques" class="form-inline mb-3" style="display: flex;" action="{% url 'buscar_bloques' %}" method="GET">
-          <input class="form-control mr-sm-2" type="search" placeholder="Buscar Bloques" aria-label="Buscar Bloques" name="search_text">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="margin-left: 2em;">Buscar</button>
-        </form>
-
-        <ul class="list-group" id="listaBloques">
-          <!-- Elementos de la lista de Bloques -->
-          {% for bloque in bloques %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                {{ bloque.codigo }}
-                <a href="{% url 'editar_bloque' bloque_id=bloque.id %}" class="btn btn-primary btn-editar-bloque">Editar <i class="fas fa-edit"></i></a>
+        <a class="navbar-brand" href="#">Gestionar Bloques y Puntos</a>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item" style="padding-right: 2em;">
+                <a class="nav-link" href="#">Página de Inicio</a>
             </li>
-          {% endfor %}
         </ul>
-      </div>
-              <!-- Contenedor de la lista de puntos (parte derecha) -->
+    </div>
+</nav>
+
+
+<div class="container-fluid" style="padding-left: 3em;">
+    <div class="row">
+        <!-- Contenedor de la lista de objetos (parte izquierda) -->
         <div class="col-lg-6 col-md-12" style="padding-bottom: 3em;">
-          <div class="divtitulo">
-            <h2>Puntos</h2>
-          </div>
+            <div class="divtitulo d-flex align-items-center mb-3" style="margin-top:1em;">
+                <h2>Bloques</h2>
+                <a href="{% url 'crear_bloque' %}" class="btn btn-primary btn-anadir"
+                   style="margin-left: 2em; background-color: rgb(17, 218, 117);">Añadir Bloque</a>
+            </div>
 
-          <!-- Nuevo formulario de búsqueda para Puntos -->
-          <form id="formBuscarPuntos" class="form-inline mb-3" style="display: flex;" action="{% url 'buscar_puntos' %}" method="GET">
-            <input class="form-control mr-sm-2" type="search" placeholder="Buscar Puntos" aria-label="Buscar Puntos" name="search_text_puntos">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="margin-left: 2em;">Buscar</button>
-          </form>
+            <!-- Nuevo formulario de búsqueda para Bloques -->
+            <form id="formBuscarBloques" class="form-inline mb-3" style="display: flex;"
+                  action="{% url 'buscar_bloques' %}" method="GET">
+                <input class="form-control mr-sm-2" type="search" placeholder="Buscar Bloques"
+                       aria-label="Buscar Bloques" name="search_text">
+                <select class="form-control mr-sm-2" name="facultad">
+                    <option value="">Todas las facultades</option>
+                    {% for facultad in facultades %}
+                        <option value="{{ facultad.id }}">{{ facultad.nombre }}</option>
+                    {% endfor %}
+                </select>
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="margin-left: 2em;">Buscar
+                </button>
+            </form>
+            <div class="divBloques">
+                <ul class="list-group" id="listaBloques">
+                    {% for bloque in bloques %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ bloque.codigo }}
+                            <div>
+                                <a href="{% url 'editar_bloque' bloque_id=bloque.id %}"
+                                   class="btn btn-primary btn-editar-bloque">Editar <i class="fas fa-edit"></i></a>
+                                <button class="btn btn-danger btn-eliminar-bloque ml-1"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalEliminarBloque"
+                                        data-bloque-id="{{ bloque.id }}"
+                                        data-bloque-codigo="{{ bloque.codigo }}">
+                                    Eliminar <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
 
-          <ul class="list-group" id="listaPuntos">
-            <!-- Elementos de la lista de Puntos -->
-            {% for punto in puntos %}
-              <li class="list-group-item d-flex justify-content-between align-items-center">
-                  {{ punto.codigo }}
-                  <a href="{% url 'editar_punto' punto_id=punto.id %}" class="btn btn-primary btn-editar-punto">Editar <i class="fas fa-edit"></i></a>
-              </li>
-            {% endfor %}
-          </ul>
+        </div>
+        <!-- Contenedor de la lista de puntos (parte derecha) -->
+        <div class="col-lg-6 col-md-12" style="padding-bottom: 3em;">
+            <div class="divtitulo d-flex align-items-center mb-3" style="margin-top:1em;">
+                <h2>Puntos</h2>
+                <a href="{% url 'crear_punto' %}" class="btn btn-primary btn-anadir"
+                   style="margin-left: 2em; background-color: rgb(17, 218, 117);">Añadir Punto</a>
+            </div>
+
+            <!-- Nuevo formulario de búsqueda para Puntos -->
+            <form id="formBuscarPuntos" class="form-inline mb-3" style="display: flex;"
+                  action="{% url 'buscar_puntos' %}" method="GET">
+                <input class="form-control mr-sm-2" type="search" placeholder="Buscar Puntos" aria-label="Buscar Puntos"
+                       name="search_text_puntos">
+                <select class="form-control mr-sm-2" name="facultad_puntos">
+                    <option value="">Todas las facultades</option>
+                    {% for facultad in facultades %}
+                        <option value="{{ facultad.id }}">{{ facultad.nombre }}</option>
+                    {% endfor %}
+                </select>
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="margin-left: 2em;">Buscar
+                </button>
+            </form>
+            <div class="divPuntos">
+                <ul class="list-group" id="listaPuntos">
+                    <!-- Elementos de la lista de Puntos -->
+                    {% for punto in puntos %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ punto.codigo }}
+                            <div>
+                                <a href="{% url 'editar_punto' punto_id=punto.id %}"
+                                   class="btn btn-primary btn-editar-punto">Editar <i class="fas fa-edit"></i></a>
+                                <button class="btn btn-danger btn-eliminar-punto ml-1"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalEliminarPunto"
+                                        data-punto-id="{{ punto.id }}"
+                                        data-punto-codigo="{{ punto.codigo }}">
+                                    Eliminar <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
         </div>
     </div>
-  </div>
-
-
-
-
-  <!-- Modal para editar bloques -->
-  <div class="modal fade" id="modalEditarBloque" tabindex="-1" aria-labelledby="modalEditarBloqueLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalEditarBloqueLabel">Editar Bloque</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="bloqueForm" method="post" enctype="multipart/form-data">
-            <!-- Campos del formulario para editar bloques -->
-            <div class="form-group">
-              <label for="codigoBloque">Código:</label>
-              <input type="text" class="form-control" id="codigoBloque" name="codigoBloque">
-            </div>
-            <div class="form-group">
-              <label for="latitudBloque">Latitud:</label>
-              <input type="text" class="form-control" id="latitudBloque" name="latitudBloque">
-            </div>
-            <div class="form-group">
-              <label for="longitudBloque">Longitud:</label>
-              <input type="text" class="form-control" id="longitudBloque" name="longitudBloque">
-            </div>
-            <div class="form-group">
-              <label for="descripcionBloque">Descripción:</label>
-              <input type="text" class="form-control" id="descripcionBloque" name="descripcionBloque">
-            </div>
-            <div class="form-group">
-              <label for="informacionBloque">Información:</label>
-              <input type="text" class="form-control" id="informacionBloque" name="informacionBloque">
-            </div>
-            <div class="form-group">
-              <label for="valoracionBloque">Valoración:</label>
-              <input type="number" class="form-control" id="valoracionBloque" name="valoracionBloque">
-            </div>
-            <div class="form-group">
-              <label for="fotoBloque">Foto:</label>
-              <input type="file" class="form-control" id="fotoBloque" name="fotoBloque">
-            </div>
-            <div class="form-group">
-              <label for="facultadBloque">Facultad:</label>
-              <select class="form-control" id="facultadBloque" name="facultadBloque">
-                <!-- Agrega opciones para la facultad -->
-              </select>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary cancelarEdicion" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary" id="guardarBloque">Guardar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-        {% if messages %}
-        <div class="modal fade" id="modalAlert" tabindex="-1" aria-labelledby="modalAlertLabel" aria-hidden="true" data-message="{{ messages }}">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="modalAlertLabel">Mensaje de Alerta</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <ul class="list-group">
-                  {% for message in messages %}
-                  <li class="list-group-item{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</li>
-          {% endfor %}
-        </ul>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-      </div>
-    </div>
-  </div>
 </div>
+
+
+<!-- Modal para editar bloques -->
+<div class="modal fade" id="modalEditarBloque" tabindex="-1" aria-labelledby="modalEditarBloqueLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditarBloqueLabel">Editar Bloque</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="bloqueForm" method="post" enctype="multipart/form-data">
+                    <!-- Campos del formulario para editar bloques -->
+                    <div class="form-group">
+                        <label for="codigoBloque">Código:</label>
+                        <input type="text" class="form-control" id="codigoBloque" name="codigoBloque">
+                    </div>
+                    <div class="form-group">
+                        <label for="latitudBloque">Latitud:</label>
+                        <input type="text" class="form-control" id="latitudBloque" name="latitudBloque">
+                    </div>
+                    <div class="form-group">
+                        <label for="longitudBloque">Longitud:</label>
+                        <input type="text" class="form-control" id="longitudBloque" name="longitudBloque">
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcionBloque">Descripción:</label>
+                        <input type="text" class="form-control" id="descripcionBloque" name="descripcionBloque">
+                    </div>
+                    <div class="form-group">
+                        <label for="informacionBloque">Información:</label>
+                        <input type="text" class="form-control" id="informacionBloque" name="informacionBloque">
+                    </div>
+                    <div class="form-group">
+                        <label for="valoracionBloque">Valoración:</label>
+                        <input type="number" class="form-control" id="valoracionBloque" name="valoracionBloque">
+                    </div>
+                    <div class="form-group">
+                        <label for="fotoBloque">Foto:</label>
+                        <input type="file" class="form-control" id="fotoBloque" name="fotoBloque">
+                    </div>
+                    <div class="form-group">
+                        <label for="facultadBloque">Facultad:</label>
+                        <select class="form-control" id="facultadBloque" name="facultadBloque">
+
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary cancelarEdicion" data-bs-dismiss="modal">Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" id="guardarBloque">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% if messages %}
+    <div class="modal fade" id="modalAlert" tabindex="-1" aria-labelledby="modalAlertLabel" aria-hidden="true"
+         data-message="{{ messages }}">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAlertLabel">Mensaje de Alerta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group">
+                        {% for message in messages %}
+                            <li class="list-group-item{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endif %}
 
-  <!-- Modal para editar puntos -->
-  <div class="modal fade" id="modalEditarPunto" tabindex="-1" aria-labelledby="modalEditarPuntoLabel" aria-hidden="true">
+<!-- Modal para editar puntos -->
+<div class="modal fade" id="modalEditarPunto" tabindex="-1" aria-labelledby="modalEditarPuntoLabel" aria-hidden="true">
     <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalEditarPuntoLabel">Editar Punto</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditarPuntoLabel">Editar Punto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="puntoForm" method="post">
+                    <!-- Campos del formulario para editar puntos -->
+                    <div class="form-group">
+                        <label for="codigoPunto">Código:</label>
+                        <input type="text" class="form-control" id="codigoPunto" name="codigoPunto">
+                    </div>
+                    <div class="form-group">
+                        <label for="latitudPunto">Latitud:</label>
+                        <input type="text" class="form-control" id="latitudPunto" name="latitudPunto">
+                    </div>
+                    <div class="form-group">
+                        <label for="longitudPunto">Longitud:</label>
+                        <input type="text" class="form-control" id="longitudPunto" name="longitudPunto">
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcionPunto">Descripción:</label>
+                        <input type="text" class="form-control" id="descripcionPunto" name="descripcionPunto">
+                    </div>
+                    <div class="form-group">
+                        <label for="facultadPunto">Facultad:</label>
+                        <select class="form-control" id="facultadPunto" name="facultadPunto">
+                            <!-- Agrega opciones para la facultad -->
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary cancelarEdicion" data-bs-dismiss="modal">Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" id="guardarPunto">Guardar</button>
+            </div>
         </div>
-        <div class="modal-body">
-          <form id="puntoForm" method="post">
-            <!-- Campos del formulario para editar puntos -->
-            <div class="form-group">
-              <label for="codigoPunto">Código:</label>
-              <input type="text" class="form-control" id="codigoPunto" name="codigoPunto">
-            </div>
-            <div class="form-group">
-              <label for="latitudPunto">Latitud:</label>
-              <input type="text" class="form-control" id="latitudPunto" name="latitudPunto">
-            </div>
-            <div class="form-group">
-              <label for="longitudPunto">Longitud:</label>
-              <input type="text" class="form-control" id="longitudPunto" name="longitudPunto">
-            </div>
-            <div class="form-group">
-              <label for="descripcionPunto">Descripción:</label>
-              <input type="text" class="form-control" id="descripcionPunto" name="descripcionPunto">
-            </div>
-            <div class="form-group">
-              <label for="facultadPunto">Facultad:</label>
-              <select class="form-control" id="facultadPunto" name="facultadPunto">
-                <!-- Agrega opciones para la facultad -->
-              </select>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary cancelarEdicion" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary" id="guardarPunto">Guardar</button>
-        </div>
-      </div>
     </div>
-  </div>
-
-  <div class="modal fade" id="modalAlert" tabindex="-1" aria-labelledby="modalAlertLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalAlertLabel">Mensaje de Alerta</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p id="modalAlertMessage"></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-      </div>
-    </div>
-  </div>
 </div>
 
-  <script>
+<div class="modal fade" id="modalAlert" tabindex="-1" aria-labelledby="modalAlertLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAlertLabel">Mensaje de Alerta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="modalAlertMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal de eliminación para Bloques -->
+<div class="modal fade" id="modalEliminarBloque" tabindex="-1" aria-labelledby="modalEliminarBloqueLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEliminarBloqueLabel">Eliminar Bloque</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro que deseas eliminar el Bloque "<span id="bloqueCodigo"></span>"?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+                <form id="formEliminarBloque" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de eliminación para Puntos -->
+<div class="modal fade" id="modalEliminarPunto" tabindex="-1" aria-labelledby="modalEliminarPuntoLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEliminarPuntoLabel">Eliminar Punto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro que deseas eliminar el Punto "<span id="puntoCodigo"></span>"?
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+                <form id="formEliminarPunto" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
     document.addEventListener("DOMContentLoaded", function () {
-      // Obtener el formulario de búsqueda y la lista de bloques
-      const formBuscarBloques = document.getElementById("formBuscarBloques");
-      const listaBloques = document.getElementById("listaBloques");
+        // Obtener el formulario de búsqueda y la lista de bloques
+        const formBuscarBloques = document.getElementById("formBuscarBloques");
+        const listaBloques = document.getElementById("listaBloques");
 
-      // Agregar un evento submit al formulario de búsqueda de bloques
-      formBuscarBloques.addEventListener("submit", function (event) {
-        event.preventDefault(); // Evitar que el formulario se envíe por defecto
-        const searchText = document.querySelector("[name='search_text']").value; // Obtener el texto de búsqueda
+        // Agregar un evento submit al formulario de búsqueda de bloques
+        formBuscarBloques.addEventListener("submit", function (event) {
+            event.preventDefault(); // Evitar que el formulario se envíe por defecto
+            const searchText = document.querySelector("[name='search_text']").value; // Obtener el texto de búsqueda
 
-        // Hacer una petición AJAX al servidor para obtener la lista de bloques actualizada
-        fetch(`/buscar_bloques/?search_text=${searchText}`, {
-          method: "GET",
-          headers: {
-            "X-Requested-With": "XMLHttpRequest" // Indicar que es una petición AJAX
-          }
-        })
-        .then(response => response.text()) // Convertir la respuesta en texto
-        .then(data => {
-          // Actualizar la lista de bloques con los resultados obtenidos
-          listaBloques.innerHTML = data;
-        })
-        .catch(error => {
-          console.error("Error al buscar bloques:", error);
+            // Hacer una petición AJAX al servidor para obtener la lista de bloques actualizada
+            fetch(`/buscar_bloques/?search_text=${searchText}`, {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest" // Indicar que es una petición AJAX
+                }
+            })
+                .then(response => response.text()) // Convertir la respuesta en texto
+                .then(data => {
+                    // Actualizar la lista de bloques con los resultados obtenidos
+                    listaBloques.innerHTML = data;
+                })
+                .catch(error => {
+                    console.error("Error al buscar bloques:", error);
+                });
         });
-      });
     });
-  </script>
-  <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    // Obtener el formulario de búsqueda y la lista de puntos
-    const formBuscarPuntos = document.getElementById("formBuscarPuntos");
-    const listaPuntos = document.getElementById("listaPuntos");
-
-    // Agregar un evento submit al formulario de búsqueda de puntos
-    formBuscarPuntos.addEventListener("submit", function (event) {
-      event.preventDefault(); // Evitar que el formulario se envíe por defecto
-      const searchText = document.querySelector("[name='search_text_puntos']").value; // Obtener el texto de búsqueda
-
-      // Hacer una petición AJAX al servidor para obtener la lista de puntos actualizada
-      fetch(`/buscar_puntos/?search_text=${searchText}`, {
-        method: "GET",
-        headers: {
-          "X-Requested-With": "XMLHttpRequest" // Indicar que es una petición AJAX
-        }
-      })
-      .then(response => response.text()) // Convertir la respuesta en texto
-      .then(data => {
-        // Actualizar la lista de puntos con los resultados obtenidos
-        listaPuntos.innerHTML = data;
-      })
-      .catch(error => {
-        console.error("Error al buscar Puntos:", error);
-      });
-    });
-  });
 </script>
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    // Obtener el elemento de la ventana modal y el mensaje de alerta
-    const modalAlert = document.getElementById("modalAlert");
-    const modalAlertMessage = document.getElementById("modalAlertMessage");
+    document.addEventListener("DOMContentLoaded", function () {
+        // Obtener el formulario de búsqueda y la lista de puntos
+        const formBuscarPuntos = document.getElementById("formBuscarPuntos");
+        const listaPuntos = document.getElementById("listaPuntos");
 
-    // Verificar si hay un mensaje de alerta
-    const message = modalAlert.getAttribute("data-message");
-    if (message) {
-      modalAlertMessage.textContent = message;
-      $('#modalAlert').modal('show'); // Mostrar la ventana modal
-    }
-  });
+        // Agregar un evento submit al formulario de búsqueda de puntos
+        formBuscarPuntos.addEventListener("submit", function (event) {
+            event.preventDefault(); // Evitar que el formulario se envíe por defecto
+            const searchText = document.querySelector("[name='search_text_puntos']").value; // Obtener el texto de búsqueda
+
+            // Hacer una petición AJAX al servidor para obtener la lista de puntos actualizada
+            fetch(`/buscar_puntos/?search_text=${searchText}`, {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest" // Indicar que es una petición AJAX
+                }
+            })
+                .then(response => response.text()) // Convertir la respuesta en texto
+                .then(data => {
+                    // Actualizar la lista de puntos con los resultados obtenidos
+                    listaPuntos.innerHTML = data;
+                })
+                .catch(error => {
+                    console.error("Error al buscar Puntos:", error);
+                });
+        });
+    });
 </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Obtener el elemento de la ventana modal y el mensaje de alerta
+        const modalAlert = document.getElementById("modalAlert");
+        const modalAlertMessage = document.getElementById("modalAlertMessage");
+
+        // Verificar si hay un mensaje de alerta
+        const message = modalAlert.getAttribute("data-message");
+        if (message) {
+            modalAlertMessage.textContent = message;
+            $('#modalAlert').modal('show'); // Mostrar la ventana modal
+        }
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Función para agregar el evento de clic al botón de eliminar bloque
+        function agregarEventoClickBotonEliminarBloque() {
+            const listaBloques = document.getElementById("listaBloques");
+            listaBloques.addEventListener("click", function (event) {
+                const target = event.target;
+                if (target.classList.contains("btn-eliminar-bloque")) {
+                    const bloqueId = target.getAttribute("data-bloque-id");
+                    const bloqueCodigo = target.getAttribute("data-bloque-codigo");
+
+                    const modalEliminarBloque = document.getElementById("modalEliminarBloque");
+                    modalEliminarBloque.querySelector(".modal-body").textContent = `¿Estás seguro que deseas eliminar el Bloque "${bloqueCodigo}"?`;
+
+                    const formEliminarBloque = document.getElementById("formEliminarBloque");
+                    formEliminarBloque.action = `/eliminar_bloque/${bloqueId}/`;
+                }
+            });
+        }
+
+        // Llamar a la función para agregar el evento de clic al botón de eliminar bloque inicialmente
+        agregarEventoClickBotonEliminarBloque();
+
+        // Función para agregar el evento de clic al botón de eliminar punto
+        function agregarEventoClickBotonEliminarPunto() {
+            const listaPuntos = document.getElementById("listaPuntos");
+            listaPuntos.addEventListener("click", function (event) {
+                const target = event.target;
+                if (target.classList.contains("btn-eliminar-punto")) {
+                    const puntoId = target.getAttribute("data-punto-id");
+                    const puntoCodigo = target.getAttribute("data-punto-codigo");
+
+                    const modalEliminarPunto = document.getElementById("modalEliminarPunto");
+                    modalEliminarPunto.querySelector(".modal-body").textContent = `¿Estás seguro que deseas eliminar el Punto "${puntoCodigo}"?`;
+
+                    const formEliminarPunto = document.getElementById("formEliminarPunto");
+                    formEliminarPunto.action = `/eliminar_punto/${puntoId}/`;
+                }
+            });
+        }
+
+        // Llamar a la función para agregar el evento de clic al botón de eliminar punto inicialmente
+        agregarEventoClickBotonEliminarPunto();
+
+        // Función para actualizar la lista de bloques mediante una petición AJAX
+        function actualizarListaBloques(searchText, facultad) {
+            const listaBloques = document.getElementById("listaBloques");
+            fetch(`/buscar_bloques/?search_text=${searchText}&facultad=${facultad}`, {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+                .then(response => response.text())
+                .then(data => {
+                    listaBloques.innerHTML = data;
+                    // Volver a agregar el evento de clic al botón de eliminar bloque después de la actualización
+                    agregarEventoClickBotonEliminarBloque();
+                })
+                .catch(error => {
+                    console.error("Error al buscar bloques:", error);
+                });
+        }
+
+        // Obtener el formulario de búsqueda y agregar un evento submit
+        const formBuscarBloques = document.getElementById("formBuscarBloques");
+        formBuscarBloques.addEventListener("submit", function (event) {
+            event.preventDefault();
+            const searchText = document.querySelector("[name='search_text']").value;
+            const facultad = document.querySelector("[name='facultad']").value;
+            actualizarListaBloques(searchText, facultad);
+        });
+
+        // Función para actualizar la lista de puntos mediante una petición AJAX
+        function actualizarListaPuntos(searchText, facultad) {
+            const listaPuntos = document.getElementById("listaPuntos");
+            fetch(`/buscar_puntos/?search_text=${searchText}&facultad_puntos=${facultad}`, {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+                .then(response => response.text())
+                .then(data => {
+                    listaPuntos.innerHTML = data;
+                    // Volver a agregar el evento de clic al botón de eliminar punto después de la actualización
+                    agregarEventoClickBotonEliminarPunto();
+                })
+                .catch(error => {
+                    console.error("Error al buscar puntos:", error);
+                });
+        }
+
+        // Obtener el formulario de búsqueda y agregar un evento submit
+        const formBuscarPuntos = document.getElementById("formBuscarPuntos");
+        formBuscarPuntos.addEventListener("submit", function (event) {
+            event.preventDefault();
+            const searchText = document.querySelector("[name='search_text_puntos']").value;
+            const facultad = document.querySelector("[name='facultad_puntos']").value;
+            actualizarListaPuntos(searchText, facultad);
+        });
+    });
+</script>
+
+
 </body>
 </html>

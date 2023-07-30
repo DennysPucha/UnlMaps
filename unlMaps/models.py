@@ -12,7 +12,7 @@ class Facultad(models.Model):
     nombre = models.CharField(max_length=100)
     sigla = models.CharField(max_length=100)
     decano = models.CharField(max_length=100)
-    foto = models.ImageField(upload_to=get_image_path)
+    foto = models.ImageField(upload_to=get_image_path, blank=True)
     mapa = models.ForeignKey(Mapa, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -40,7 +40,7 @@ class Punto(models.Model):
 class Bloque(Punto):
     informacion = models.CharField(max_length=100)
     valoracion = models.IntegerField(default=0)
-    foto = models.ImageField(upload_to=get_image_path)
+    foto = models.ImageField(upload_to=get_image_path, blank=True)
 
     def __str__(self):
         return self.codigo

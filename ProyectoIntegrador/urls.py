@@ -26,7 +26,6 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('crear-conexion/', views.crear_conexion, name='crear_conexion'),
     path('calcular-distancia/', views.calcular_distancia, name='calcular_distancia'),
-    path('seleccionar_tipo_de_nodo/', views.crear_objeto, name='crear_objeto'),
     path('crear_bloque/', views.crear_bloque, name='crear_bloque'),
     path('crear_punto/', views.crear_punto, name='crear_punto'),
     path('admin/', admin.site.urls),
@@ -39,8 +38,11 @@ urlpatterns = [
     path('editar_bloque/<int:bloque_id>/', views.editar_bloque, name='editar_bloque'),
     path('editar_punto/<int:punto_id>/', views.editar_punto, name='editar_punto'),
     path('buscar_facultades/', views.buscar_facultades, name='buscar_facultades'),
-    path('buscar_bloques/', views.buscar_bloques, name='buscar_bloques'),  # URL para la búsqueda de bloques
-    path('buscar_puntos/', views.buscar_puntos, name='buscar_puntos'),  # URL para la búsqueda de puntos
+    path('buscar_bloques/', views.buscar_bloques, name='buscar_bloques'),
+    path('buscar_puntos/', views.buscar_puntos, name='buscar_puntos'),
     path('eliminar_facultad/<int:facultad_id>/', views.eliminar_facultad, name='eliminar_facultad'),
+    path('eliminar_punto/<int:punto_id>/', views.eliminar_punto, name='eliminar_punto'),
+    path('eliminar_bloque/<int:bloque_id>/', views.eliminar_bloque, name='eliminar_bloque'),
     path('gestionar_bloques_puntos/', views.gestionar_bloques_puntos, name='gestionar_bloques_puntos'),
+    path('gestionar_cuenta/', views.gestionar_cuenta_view, name='gestionar_cuenta'),
 ]

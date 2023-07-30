@@ -5,17 +5,18 @@ from locale import format_string
 from unlMaps.models import Conexion
 
 
-def calcular_distancia(lat1, alt1, lat2, alt2):
-
+def calcular_distancia(lat1, lon1, lat2, lon2):
     R = 6371000.0  # Radio de la Tierra en metros
 
     lat1_rad = radians(lat1)
+    lon1_rad = radians(lon1)
     lat2_rad = radians(lat2)
+    lon2_rad = radians(lon2)
 
     dlat = lat2_rad - lat1_rad
-    dalt = alt2 - alt1
+    dlon = lon2_rad - lon1_rad
 
-    a = sin(dlat / 2) ** 2 + cos(lat1_rad) * cos(lat2_rad) * sin(dalt / 2) ** 2
+    a = sin(dlat / 2) ** 2 + cos(lat1_rad) * cos(lat2_rad) * sin(dlon / 2) ** 2
     c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
     distance = (R * c) * 0.243
@@ -72,14 +73,14 @@ def crear_grafo(puntos):
 
     for punto in puntos:
         neighbors = {}
-        lat1, alt1 = float(punto.latitud), float(punto.longitud)
+        lat1, lon1 = float(punto.latitud), float(punto.longitud)
 
         conexiones = Conexion.objects.filter(nodo_origen=punto)
 
         for conexion in conexiones:
             neighbor = conexion.nodo_destino
-            lat2, alt2 = float(neighbor.latitud), float(neighbor.longitud)
-            distance = calcular_distancia(lat1, alt1, lat2, alt2)
+            lat2, lon2 = float(neighbor.latitud), float(neighbor.longitud)
+            distance = calcular_distancia(lat1, lon1, lat2, lon2)
             neighbors[neighbor.codigo] = distance
 
         graph[punto.codigo] = neighbors
