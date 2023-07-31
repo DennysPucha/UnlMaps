@@ -1,129 +1,199 @@
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-
+<!doctype html>
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Presentacion</title>
-    <link rel="stylesheet" href="{% static 'css/estilosIndex.css' %}">
-</head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
 
-<body>
-    <div id="pis">
-        <h1
-            style="color: rgb(255, 255, 255); font-family: monospace; text-align: center; padding-top: 15px; padding-bottom: 15px;">
-            SOBRE EL PROYECTO
-        </h1>
-        <!-- Boton para volver a Inicio -->
-        <button class="button" onclick="window.location.href='{% url 'login' %}';">
-            <img src="{% static 'imagenes/homev.png' %}">
+    <title>Inicio</title>
+</head>
+<style>
+    .card{
+        background-color: #6ea8fe;
+    }
+    .carousel-caption{
+        color:#0d6efd;
+    }
+    h1{
+        color: #0a53be;
+    }
+    h2,h3,h4{
+        color:#cff4fc;
+    }
+
+</style>
+<body style="background-color:#cff4fc;">
+<script src="{% static 'bootstrap-5.2.0-dist/js/bootstrap.bundle.min.js' %}"></script>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#Cartas">
+            <img src="{% static 'imagenes/usuario.png' %}" alt="" width="60" height="45"
+                 class="d-inline-block align-text-top">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="subtitulo">
-            <h3>¿QUE ES UNLMAPS?</h3>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#Carrusel" style="color:#cff4fc">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"></a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false" style="color:#cff4fc">
+                        Secciones
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#Cartas">Integrantes</a></li>
+                        <li><a class="dropdown-item" href="#Consej-os">Materias</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <a class="btn btn-outline-light" onclick="window.location.href='{% url 'login' %}';" role="button">Iniciar Sesión</a>
+            <div style="padding-right:10px;"></div>
+            <a href="#" class="btn btn-outline-danger" role="button">Mapa</a>
         </div>
-        <div class="parrafo"  style="border-radius: 10px;">
-            <p>
-                Es una aplicación web para que los estudiantes y demás usuarios puedan guiarse en el campus
-                universitario
-                que proporciona a los estudiantes y visitantes una herramienta que les permita guiarse por el campus de
-                manera eficiente. Debido a la falta de orientación y la dificultad que experimentan las personas al
-                moverse
-                por el campus universitario. Muchos estudiantes y visitantes se pierden debido a la complejidad y
-                extensión
-                del campus, lo que puede resultar en retrasos, frustración y pérdida de tiempo. Esperamos presentar una
-                aplicación web que permita a los usuarios visualizar un mapa del campus y obtener la ruta más corta para
-                llegar a su destino deseado. Esta aplicación utilizará algoritmos de búsqueda y estructuras de datos
-                como
-                grafos y árboles para calcular de manera eficiente las rutas óptimas. Con esta solución, esperamos
-                mejorar
-                la experiencia de los estudiantes y visitantes en el campus universitario, facilitando su movilidad.
-            </p>
-            <figure class="img_parrafo">
-                <img src="{% static 'imagenes/estilo.png' %}">
+    </div>
+</nav>
+
+<section id="Carrusel">
+    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
+                    aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
+                    aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
+                    aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="{% static '/imagenes/carrusel_1.jpg' %}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Busca tus rutas</h5>
+                    <p>Encuentra las facultades y bloques de la universidad con facilidad
+                    </p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{% static '/imagenes/carrusel_2.jpg' %}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>No te preocupes por las nomenclaturas</h5>
+                    <p>Encuentra el lugar rápido y de manera sencilla</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{% static '/imagenes/carrusel_3.jpg' %}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Encuentra lo que buscas</h5>
+                    <p>Si eres estudiante no dudes en usar la aplicación web para encontrar el lugar que desees dentro
+                    de la universidad</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
+                data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
+                data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</section>
+<br>
+<div class="container-xxl" style="text-align:center;">
+    <h1>Integrantes</h1>
+</div>
+<section id="Cartas">
+    <div class="container-xxl" style="display: flex; align-items: center;">
+        <div class="card" style="width: 18.5rem;">
+            <figure>
+                <img class="img-fluid integrante-img" src="{% static 'imagenes/usuario.png' %}">
             </figure>
+            <div class="card-body">
+                <h3 class="Nombre_In">Letty Rojas</h3>
+                <p>Estudiante de la carrera de Ingeniería en Computación.</p>
+                <h4 class="Titulo_Ciclo">Cuarto Ciclo "A"</h4>
+                <p class="correo">letty.rojas@unl.edu.ec</p>
+            </div>
         </div>
-        <div class="integrantes">
-            <h2>INTEGRANTES:</h2>
+        <div style="padding-right: 20px;"></div>
+
+        <div class="card" style="width: 18.5rem;">
+            <figure>
+                <img class="img-fluid integrante-img" src="{% static 'imagenes/usuario.png' %}">
+            </figure>
+            <div class="card-body">
+                <h3 class="Nombre_In">Dennys Pucha</h3>
+                <p>Estudiante de la carrera de Ingeniería en Computación.</p>
+                <h4 class="Titulo_Ciclo">Cuarto Ciclo "A"</h4>
+                <p class="correo">dennys.pucha@unl.edu.ec</p>
+            </div>
         </div>
-        <div class="container">
-            <div class="card" style="background-color: #748FFC;">
-                <figure>
-                    <img src="{% static 'imagenes/usuario.png' %}">
-                </figure>
-                <div class="contenido">
-                    <h3 class="Nombre_In">Letty Rojas</h3>
-                    <p>Estudiante de la carrera de Ingeniería en Computación.
-                        <h4 class="Titulo_Ciclo">Cuarto Ciclo "A"</h4>
-                    </p>
-                    <p class="correo">letty.rojas@unl.edu.ec</p>
-                </div>
+        <div style="padding-right: 20px;"></div>
+
+        <div class="card" style="width: 18.5rem;">
+            <figure>
+                <img class="img-fluid integrante-img" src="{% static 'imagenes/usuario.png' %}">
+            </figure>
+            <div class="card-body">
+                <h3 class="Nombre_In">Jaime Mendoza</h3>
+                <p>Estudiante de la carrera de Ingeniería en Computación.</p>
+                <h4 class="Titulo_Ciclo">Cuarto Ciclo "A"</h4>
+                <p class="correo">jaime.mendoza@unl.edu.ec</p>
             </div>
-            <div class="card" style="background-color: #5DFFD0;">
-                <figure>
-                    <img src="{% static 'imagenes/usuario.png' %}">
-                </figure>
-                <div class="contenido">
-                    <h3 class="Nombre_In">Dennys Pucha</h3>
-                    <p>Estudiante de la carrera de Ingeniería en Computación.
-                        <h4 class="Titulo_Ciclo">Cuarto Ciclo "A"</h4>
-                    </p>
-                    <p class="correo">dennys.pucha@unl.edu.ec</p>
-                </div>
+        </div>
+        <div style="padding-right: 20px;"></div>
+
+        <div class="card" style="width: 18.5rem;">
+            <figure>
+                <img class="img-fluid integrante-img" src="{% static 'imagenes/usuario.png' %}">
+            </figure>
+            <div class="card-body">
+                <h3 class="Nombre_In">Cristian Armijos</h3>
+                <p>Estudiante de la carrera de Ingeniería en Computación.</p>
+                <h4 class="Titulo_Ciclo">Cuarto Ciclo "A"</h4>
+                <p class="correo">cristian.e.armijos@unl.edu.ec</p>
             </div>
-            <div class="card" style="background-color: #FFA94D;">
-                <figure>
-                    <<img src="{% static 'imagenes/usuario.png' %}">
-                </figure>
-                <div class="contenido">
-                    <h3 class="Nombre_In">Jaime Mendoza</h3>
-                    <p>Estudiante de la carrera de Ingeniería en Computación.
-                        <h4 class="Titulo_Ciclo">Cuarto Ciclo "A"</h4>
-                    </p>
-                    <p class="correo">jaime.mendoza@unl.edu.ec</p>
-                </div>
-            </div>
-            <div class="card" style="background-color: #D1FF7E;">
-                <figure>
-                    <img src="{% static 'imagenes/usuario.png' %}">
-                </figure>
-                <div class="contenido">
-                    <h3 class="Nombre_In">Cristian Armijos</h3>
-                    <p>Estudiante de la carrera de Ingeniería en Computación.
-                        <h4 class="Titulo_Ciclo">Cuarto Ciclo "A"</h4>
-                    </p>
-                    <p class="correo">cristian.e.armijos@unl.edu.ec</p>
-                </div>
-            </div>
-            <div class="card" style="background-color: #4DABF7;">
-                <figure>
-                    <img src="{% static 'imagenes/usuario.png' %}">
-                </figure>
-                <div class="contenido">
-                    <h3 class="Nombre_In">Jhonel Pesantes</h3>
-                    <p>Estudiante de la carrera de Ingeniería en Computación.
-                        <h4 class="Titulo_Ciclo">Cuarto Ciclo "A"</h4>
-                    </p>
-                    <p class="correo">angel.pesantes@unl.edu.ec</p>
-                </div>
+        </div>
+        <div style="padding-right: 20px;"></div>
+
+        <div class="card" style="width: 18.5rem;">
+            <figure>
+                <img class="img-fluid integrante-img" src="{% static 'imagenes/usuario.png' %}">
+            </figure>
+            <div class="card-body">
+                <h3 class="Nombre_In">Jhonel Pesantes</h3>
+                <p>Estudiante de la carrera de Ingeniería en Computación.</p>
+                <h4 class="Titulo_Ciclo">Cuarto Ciclo "A"</h4>
+                <p class="correo">angel.pesantes@unl.edu.ec</p>
             </div>
         </div>
     </div>
-</body>
-
-<body>
-    <div id="materias">
-        <!-- Materias -->
-        <!-- ========================================================================================= -->
-        <div>
-            <h1 class="mat_rel">Materias Relacionadas:</h1>
-        </div>
-        <div class="container_materias">
-            <div class="card" style="background-color:rgb(38, 92, 173);">
-                <figure>
-                    <img src="{% static 'imagenes/ComplejidadComp.png' %}">
-                </figure>
-                <div class="contenido">
+</section>
+<br>
+<section id="Consej-os"></section>
+<div class="container-xxl" style="text-align:center;">
+    <h1>Materias</h1>
+</div>
+<div class="container" style="margin-bottom: 2em">
+    <div class="row justify-content-center">
+        <div class="col-md-4 d-flex">
+            <div class="card">
+                <img class="img-fluid card-img-top" src="{% static 'imagenes/ComplejidadComp.png' %}"
+                     style="height: 200px;">
+                <div class="card-body">
                     <h3>Complejidad Computacional</h3>
                     <p>
                         Mediante el estudio de algoritmos y estructuras de datos, se busca comprender los límites y las
@@ -132,26 +202,25 @@
                     </p>
                 </div>
             </div>
-            <div class="card" style="background-color: rgb(63, 81, 181);">
-                <figure>
-                    <img src="{% static 'imagenes/DisSoft.png' %}">
-                </figure>
-                <div class="contenido">
+        </div>
+        <div class="col-md-4 d-flex">
+            <div class="card">
+                <img class="img-fluid card-img-top" src="{% static 'imagenes/DisSoft.png' %}" style="height: 200px;">
+                <div class="card-body">
                     <h3>Diseño de Software</h3>
                     <p>
                         A través del estudio de principios de diseño, diagramas, patrones y metodologías, se busca
-                        desarrollar
-                        habilidades para diseñar software modular, escalable y mantenible para construir
+                        desarrollar habilidades para diseñar software modular, escalable y mantenible para construir
                         aplicaciones de calidad que cumplan con los requisitos del usuario.
                     </p>
                 </div>
             </div>
-            <div class="card" style="background-color: rgb(0, 160, 156);">
-                <figure>
-                    <img src="{% static 'imagenes/MetInves.png' %}">
-                </figure>
-                <div class="contenido">
-                    <h3>Metodología de la Investigación en Computacion</h3>
+        </div>
+        <div class="col-md-4 d-flex">
+            <div class="card">
+                <img class="img-fluid card-img-top" src="{% static 'imagenes/MetInves.png' %}" style="height: 200px;">
+                <div class="card-body">
+                    <h3>Metodología de la Investigación en Computación</h3>
                     <p>
                         Proporciona herramientas y técnicas para investigaciones efectivas. El estudio de métodos
                         científicos, recopilación, y desarrollo de habilidades para plantear preguntas de
@@ -161,6 +230,103 @@
             </div>
         </div>
     </div>
-</body>
+</div>
+</section>
 
+
+<div>
+    <footer class="text-center text-lg-start text-white" style="background-color: #45526e">
+        <div class="container p-4 pb-0">
+            <section class="">
+                <div class="row">
+                    <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+                        <h6 class="text-uppercase mb-4 font-weight-bold">
+                            Unl Maps
+                        </h6>
+                        <p style="text-align: justify">
+                            Es una aplicación web para que los estudiantes y demás usuarios puedan guiarse en el campus
+                            universitario
+                            que proporciona a los estudiantes y visitantes una herramienta que les permita guiarse por
+                            el campus de
+                            manera eficiente.
+                        </p>
+                    </div>
+
+                    <hr class="w-100 clearfix d-md-none"/>
+
+                    <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
+                        <h6 class="text-uppercase mb-4 font-weight-bold">Servicios Utilizados</h6>
+                        <p>
+                            <a class="text-white" href="https://www.python.org/">Python</a>
+                        </p>
+                        <p>
+                            <a class="text-white" href="https://getbootstrap.com/">Bootstrap-5</a>
+                        </p>
+                        <p>
+                            <a class="text-white" href="https://www.djangoproject.com/">Django</a>
+                        </p>
+                        <p>
+                            <a class="text-white" href="https://www.postgresql.org/">PostgreSQL</a>
+                        </p>
+                    </div>
+
+                    <hr class="w-100 clearfix d-md-none"/>
+
+                    <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
+                        <h6 class="text-uppercase mb-4 font-weight-bold">
+                            Links
+                        </h6>
+                        <p>
+                            <a class="text-white"
+                               href="https://github.com/DennysPucha/UnlMaps">Repositorio</a>
+                        </p>
+                    </div>
+
+                    <hr class="w-100 clearfix d-md-none"/>
+
+                    <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
+                        <h6 class="text-uppercase mb-4 font-weight-bold">GITHUB</h6>
+                        <p>
+                            <a class="text-white" href="https://github.com/DennysPucha">dennys.pucha@unl.edu.ec</a>
+                        </p>
+                        <p>
+                            <a class="text-white" href="https://github.com/lettcriss2003">letty.rojas@unl.edu.ec</a>
+                        </p>
+                        <p>
+                            <a class="text-white" href="https://github.com/jaimem06">jaime.mendoza@unl.edu.ec</a>
+                        </p>
+                        <p>
+                            <a class="text-white"
+                               href="https://github.com/Cristian0072">cristian.e.armijos@unl.edu.ec</a>
+                        </p>
+                        <p>
+                            <a class="text-white" href="https://github.com/Jhonel890">angel.pesantes@unl.edu.ec</a>
+                        </p>
+                    </div>
+
+                </div>
+            </section>
+
+
+            <hr class="my-3">
+
+            <section class="p-3 pt-0">
+                <div class="row d-flex align-items-center">
+
+                    <div class="col-md-7 col-lg-8 text-center text-md-start">
+                        <div class="p-3">
+
+                            <a class="text-white" href="https://mdbootstrap.com/"
+                            > © Derechos Reservados</a
+                            >
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
