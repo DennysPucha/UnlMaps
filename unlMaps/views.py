@@ -9,6 +9,7 @@ from .models import Bloque, Punto, Facultad
 from django.template import RequestContext
 from django.shortcuts import render
 from .algoritmos.algoritmo import calcular_distancia as ca
+from django.http import JsonResponse
 
 def crear_conexion(request):
     if request.method == 'POST':
@@ -96,7 +97,6 @@ def admin(request):
 def selector(request):
     facultades = Facultad.objects.all()
     return render(request, 'vistaUsuario.html', {'facultades': facultades})
-
 
 
 def buscar(request):
@@ -257,3 +257,10 @@ def inicio(request):
 def cerrar_sesion(request):
     logout(request)
     return redirect(reverse_lazy('login'))
+
+def puntos(request):
+    puntos_queryset = Punto.objects.all()
+    puntos_list = [punto.as_dict() for punto in puntos_queryset]
+    puntos_json = json.dumps(puntos_list)
+
+    return render(request, 'vistaUsuario.html', {'puntos_json': puntos_json})

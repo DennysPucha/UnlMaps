@@ -34,6 +34,18 @@ class Punto(models.Model):
     descripcion = models.CharField(max_length=200)
     facultad = models.ForeignKey(Facultad, on_delete=models.CASCADE)
 
+    def as_dict(self):
+        # Retorna un diccionario con los datos del objeto Punto
+        return {
+            'codigo': self.codigo,
+            'latitud': self.latitud,
+            'longitud': self.longitud,
+            'descripcion': self.descripcion,
+            # Puedes agregar otros campos del modelo que desees incluir en el diccionario
+        }
+
+
+
     def __str__(self):
         return self.codigo
 

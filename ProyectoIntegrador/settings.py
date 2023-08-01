@@ -25,7 +25,9 @@ SECRET_KEY = 'django-insecure-qqgmgy1uvt&b!+!pb5=176g+0t1eeq2v9-3_=i_fr+qz=*$wqu
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 ALLOWED_HOSTS = ['*']
 

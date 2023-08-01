@@ -30,11 +30,9 @@ urlpatterns = [
     path('crear_bloque/', views.crear_bloque, name='crear_bloque'),
     path('crear_punto/', views.crear_punto, name='crear_punto'),
     path('admin/', admin.site.urls),
-<<<<<<< HEAD
-    path('vistaUsuario/',views.selector,name='Selector'),
-=======
+    path('vistaUsuario/',views.puntos,name='puntos'),
+    #path('crearPuntosMapa/',views.crearPuntosMapa,name='crearPuntosMapa'),
     path('login/', views.iniciar_sesion, name='login'),
     path('inicio/', views.inicio, name='inicio'),
     path('logout/', views.cerrar_sesion, name='logout'),
->>>>>>> pruebasV2
 ]
