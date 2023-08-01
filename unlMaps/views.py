@@ -452,7 +452,7 @@ def buscar_bloques(request):
 
 def buscar_puntos(request):
     if request.method == 'GET':
-        search_text = request.GET.get('search_text')
+        search_text = request.GET.get('search_text_puntos')
         facultad_id = request.GET.get('facultad_puntos')  # Obtener la facultad seleccionada
 
         puntos = Punto.objects.exclude(bloque__isnull=False)

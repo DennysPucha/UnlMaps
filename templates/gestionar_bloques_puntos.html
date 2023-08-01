@@ -314,60 +314,72 @@
 </div>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Obtener el formulario de búsqueda y la lista de bloques
-        const formBuscarBloques = document.getElementById("formBuscarBloques");
-        const listaBloques = document.getElementById("listaBloques");
+        // Function to update the list of blocks via AJAX
+        function updateBlocksList(event) {
+            event.preventDefault(); // Prevent form submission
+            const form = document.getElementById("formBuscarBloques");
+            const list = document.getElementById("listaBloques");
 
-        // Agregar un evento submit al formulario de búsqueda de bloques
-        formBuscarBloques.addEventListener("submit", function (event) {
-            event.preventDefault(); // Evitar que el formulario se envíe por defecto
-            const searchText = document.querySelector("[name='search_text']").value; // Obtener el texto de búsqueda
+            const searchText = form.querySelector("[name='search_text']").value;
+            const faculty = form.querySelector("[name='facultad']").value;
 
-            // Hacer una petición AJAX al servidor para obtener la lista de bloques actualizada
-            fetch(`/buscar_bloques/?search_text=${searchText}`, {
+            // Make an AJAX request to update the list
+            fetch(form.action + `?search_text=${searchText}&facultad=${faculty}`, {
                 method: "GET",
                 headers: {
-                    "X-Requested-With": "XMLHttpRequest" // Indicar que es una petición AJAX
-                }
+                    "X-Requested-With": "XMLHttpRequest",
+                },
             })
-                .then(response => response.text()) // Convertir la respuesta en texto
-                .then(data => {
-                    // Actualizar la lista de bloques con los resultados obtenidos
-                    listaBloques.innerHTML = data;
+                .then((response) => response.text())
+                .then((data) => {
+                    list.innerHTML = data;
                 })
-                .catch(error => {
-                    console.error("Error al buscar bloques:", error);
+                .catch((error) => {
+                    console.error("Error updating blocks list:", error);
                 });
-        });
+        }
+
+        // Attach event listener for form submission
+        const formBuscarBloques = document.getElementById("formBuscarBloques");
+        formBuscarBloques.addEventListener("submit", updateBlocksList);
+
+        // Update the list of blocks when the page loads
+        updateBlocksList(new Event("submit")); // Trigger block search
     });
 </script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Obtener el formulario de búsqueda y la lista de puntos
-        const formBuscarPuntos = document.getElementById("formBuscarPuntos");
-        const listaPuntos = document.getElementById("listaPuntos");
+        // Function to update the list of points via AJAX
+        function updatePointsList(event) {
+            event.preventDefault(); // Prevent form submission
+            const form = document.getElementById("formBuscarPuntos");
+            const list = document.getElementById("listaPuntos");
 
-        // Agregar un evento submit al formulario de búsqueda de puntos
-        formBuscarPuntos.addEventListener("submit", function (event) {
-            event.preventDefault(); // Evitar que el formulario se envíe por defecto
-            const searchText = document.querySelector("[name='search_text_puntos']").value; // Obtener el texto de búsqueda
+            const searchText = form.querySelector("[name='search_text_puntos']").value;
+            const faculty = form.querySelector("[name='facultad_puntos']").value;
 
-            // Hacer una petición AJAX al servidor para obtener la lista de puntos actualizada
-            fetch(`/buscar_puntos/?search_text=${searchText}`, {
+            // Make an AJAX request to update the list
+            fetch(form.action + `?search_text_puntos=${searchText}&facultad_puntos=${faculty}`, {
                 method: "GET",
                 headers: {
-                    "X-Requested-With": "XMLHttpRequest" // Indicar que es una petición AJAX
-                }
+                    "X-Requested-With": "XMLHttpRequest",
+                },
             })
-                .then(response => response.text()) // Convertir la respuesta en texto
-                .then(data => {
-                    // Actualizar la lista de puntos con los resultados obtenidos
-                    listaPuntos.innerHTML = data;
+                .then((response) => response.text())
+                .then((data) => {
+                    list.innerHTML = data;
                 })
-                .catch(error => {
-                    console.error("Error al buscar Puntos:", error);
+                .catch((error) => {
+                    console.error("Error updating points list:", error);
                 });
-        });
+        }
+
+        // Attach event listener for form submission
+        const formBuscarPuntos = document.getElementById("formBuscarPuntos");
+        formBuscarPuntos.addEventListener("submit", updatePointsList);
+
+        // Update the list of points when the page loads
+        updatePointsList(new Event("submit")); // Trigger point search
     });
 </script>
 <script>
@@ -384,110 +396,6 @@
         }
     });
 </script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Función para agregar el evento de clic al botón de eliminar bloque
-        function agregarEventoClickBotonEliminarBloque() {
-            const listaBloques = document.getElementById("listaBloques");
-            listaBloques.addEventListener("click", function (event) {
-                const target = event.target;
-                if (target.classList.contains("btn-eliminar-bloque")) {
-                    const bloqueId = target.getAttribute("data-bloque-id");
-                    const bloqueCodigo = target.getAttribute("data-bloque-codigo");
-
-                    const modalEliminarBloque = document.getElementById("modalEliminarBloque");
-                    modalEliminarBloque.querySelector(".modal-body").textContent = `¿Estás seguro que deseas eliminar el Bloque "${bloqueCodigo}"?`;
-
-                    const formEliminarBloque = document.getElementById("formEliminarBloque");
-                    formEliminarBloque.action = `/eliminar_bloque/${bloqueId}/`;
-                }
-            });
-        }
-
-        // Llamar a la función para agregar el evento de clic al botón de eliminar bloque inicialmente
-        agregarEventoClickBotonEliminarBloque();
-
-        // Función para agregar el evento de clic al botón de eliminar punto
-        function agregarEventoClickBotonEliminarPunto() {
-            const listaPuntos = document.getElementById("listaPuntos");
-            listaPuntos.addEventListener("click", function (event) {
-                const target = event.target;
-                if (target.classList.contains("btn-eliminar-punto")) {
-                    const puntoId = target.getAttribute("data-punto-id");
-                    const puntoCodigo = target.getAttribute("data-punto-codigo");
-
-                    const modalEliminarPunto = document.getElementById("modalEliminarPunto");
-                    modalEliminarPunto.querySelector(".modal-body").textContent = `¿Estás seguro que deseas eliminar el Punto "${puntoCodigo}"?`;
-
-                    const formEliminarPunto = document.getElementById("formEliminarPunto");
-                    formEliminarPunto.action = `/eliminar_punto/${puntoId}/`;
-                }
-            });
-        }
-
-        // Llamar a la función para agregar el evento de clic al botón de eliminar punto inicialmente
-        agregarEventoClickBotonEliminarPunto();
-
-        // Función para actualizar la lista de bloques mediante una petición AJAX
-        function actualizarListaBloques(searchText, facultad) {
-            const listaBloques = document.getElementById("listaBloques");
-            fetch(`/buscar_bloques/?search_text=${searchText}&facultad=${facultad}`, {
-                method: "GET",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest"
-                }
-            })
-                .then(response => response.text())
-                .then(data => {
-                    listaBloques.innerHTML = data;
-                    // Volver a agregar el evento de clic al botón de eliminar bloque después de la actualización
-                    agregarEventoClickBotonEliminarBloque();
-                })
-                .catch(error => {
-                    console.error("Error al buscar bloques:", error);
-                });
-        }
-
-        // Obtener el formulario de búsqueda y agregar un evento submit
-        const formBuscarBloques = document.getElementById("formBuscarBloques");
-        formBuscarBloques.addEventListener("submit", function (event) {
-            event.preventDefault();
-            const searchText = document.querySelector("[name='search_text']").value;
-            const facultad = document.querySelector("[name='facultad']").value;
-            actualizarListaBloques(searchText, facultad);
-        });
-
-        // Función para actualizar la lista de puntos mediante una petición AJAX
-        function actualizarListaPuntos(searchText, facultad) {
-            const listaPuntos = document.getElementById("listaPuntos");
-            fetch(`/buscar_puntos/?search_text=${searchText}&facultad_puntos=${facultad}`, {
-                method: "GET",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest"
-                }
-            })
-                .then(response => response.text())
-                .then(data => {
-                    listaPuntos.innerHTML = data;
-                    // Volver a agregar el evento de clic al botón de eliminar punto después de la actualización
-                    agregarEventoClickBotonEliminarPunto();
-                })
-                .catch(error => {
-                    console.error("Error al buscar puntos:", error);
-                });
-        }
-
-        // Obtener el formulario de búsqueda y agregar un evento submit
-        const formBuscarPuntos = document.getElementById("formBuscarPuntos");
-        formBuscarPuntos.addEventListener("submit", function (event) {
-            event.preventDefault();
-            const searchText = document.querySelector("[name='search_text_puntos']").value;
-            const facultad = document.querySelector("[name='facultad_puntos']").value;
-            actualizarListaPuntos(searchText, facultad);
-        });
-    });
-</script>
-
 
 </body>
 </html>
