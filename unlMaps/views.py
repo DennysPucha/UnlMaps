@@ -9,6 +9,7 @@ from django.shortcuts import render
 from .algoritmos.algoritmo import calcular_distancia as ca
 import json
 
+
 def crear_conexion(request):
     if request.method == 'POST':
         punto_origen_id = request.POST.get('punto_origen')
@@ -85,6 +86,7 @@ def admin(request):
     facultades = Facultad.objects.all()
     return render(request, 'admin.html', {'facultades': facultades})
 
+
 # "{\"A17\": {}, \"A41\": {}, \"A40\": {} }"--> forma en como guarda los puntos
 
 def actualizar_grafo():
@@ -117,7 +119,6 @@ def actualizar_grafo():
     mapa.save()
 
 
-
 def iniciar_sesion(request):
     if request.method == 'POST':
         usuario = request.POST['usuario']
@@ -135,7 +136,13 @@ def iniciar_sesion(request):
 
 
 def inicio(request):
-    return render(request, 'inicio.html')
+    if 'success_message' in request.session:
+        success_message = request.session['success_message']
+        del request.session['success_message']
+    else:
+        success_message = None
+
+    return render(request, 'inicio.html', {'success_message': success_message})
 
 
 def cerrar_sesion(request):
@@ -234,7 +241,7 @@ def gestionar_bloques_puntos(request):
         success_message = None
 
     return render(request, 'gestionar_bloques_puntos.html',
-                  {'bloques': bloques, 'puntos': puntos,'facultades':facultades, 'success_message': success_message})
+                  {'bloques': bloques, 'puntos': puntos, 'facultades': facultades, 'success_message': success_message})
 
 
 def crear_bloque(request):
@@ -467,19 +474,42 @@ def buscar_puntos(request):
 
 
 def gestionar_cuenta_view(request):
-    cuenta = Cuenta.objects.first()  # Obtenemos la primera cuenta en la base de datos
+    mapa = get_object_or_404(Mapa, nombre="Mapa")
+    cuenta = mapa.cuenta
+
     if request.method == 'POST':
-        # Obtenemos los datos del formulario enviado
-        nombre = request.POST['nombre']
-        usuario = request.POST['usuario']
-        contrasenia = request.POST['contrasenia']
-        
+        # Obtener los datos del formulario enviado
+        nombre = request.POST.get('nombre', '')
+        usuario = request.POST.get('usuario', '')
+        old_contrasenia = request.POST.get('old_contrasenia', '')
+        new_contrasenia = request.POST.get('new_contrasenia', '')
+        confirm_new_contrasenia = request.POST.get('confirm_new_contrasenia', '')
+
+        # Verificar que la contraseña anterior sea correcta
+        if old_contrasenia != cuenta.contrasenia:
+            messages.error(request, "La contraseña actual es incorrecta.")
+            return render(request, 'gestionar_cuenta.html', {'cuenta': cuenta})
+
+        if new_contrasenia and not confirm_new_contrasenia:
+            messages.error(request, "Debes confirmar la nueva contraseña.")
+            return render(request, 'gestionar_cuenta.html', {'cuenta': cuenta})
+
+        if new_contrasenia != confirm_new_contrasenia:
+            messages.error(request, "Las contraseñas nuevas no coinciden.")
+            return render(request, 'gestionar_cuenta.html', {'cuenta': cuenta})
+
+        # Si los campos de la nueva contraseña están vacíos, no cambiar la contraseña
+        if not new_contrasenia:
+            new_contrasenia = cuenta.contrasenia
+
+        # Actualizar los datos de la cuenta, incluida la contraseña
         cuenta.nombre = nombre
         cuenta.usuario = usuario
-        cuenta.contrasenia = contrasenia
+        cuenta.contrasenia = new_contrasenia  # Actualizamos la contraseña con la nueva
         cuenta.save()
-        return redirect(
-            'inicio')
+
+        messages.success(request, "La cuenta ha sido actualizada correctamente.")
+        return redirect('inicio')
 
     return render(request, 'gestionar_cuenta.html', {'cuenta': cuenta})
 

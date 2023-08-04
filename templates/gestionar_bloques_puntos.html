@@ -384,6 +384,49 @@
 </script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // Función para agregar el evento de clic al botón de eliminar bloque
+        function agregarEventoClickBotonEliminarBloque() {
+            const listaBloques = document.getElementById("listaBloques");
+            listaBloques.addEventListener("click", function (event) {
+                const target = event.target;
+                if (target.classList.contains("btn-eliminar-bloque")) {
+                    const bloqueId = target.getAttribute("data-bloque-id");
+                    const bloqueCodigo = target.getAttribute("data-bloque-codigo");
+
+                    const modalEliminarBloque = document.getElementById("modalEliminarBloque");
+                    modalEliminarBloque.querySelector(".modal-body").textContent = `¿Estás seguro que deseas eliminar el Bloque "${bloqueCodigo}"?`;
+
+                    const formEliminarBloque = document.getElementById("formEliminarBloque");
+                    formEliminarBloque.action = `/eliminar_bloque/${bloqueId}/`;
+                }
+            });
+        }
+
+        // Llamar a la función para agregar el evento de clic al botón de eliminar bloque inicialmente
+        agregarEventoClickBotonEliminarBloque();
+
+        // Función para agregar el evento de clic al botón de eliminar punto
+        function agregarEventoClickBotonEliminarPunto() {
+            const listaPuntos = document.getElementById("listaPuntos");
+            listaPuntos.addEventListener("click", function (event) {
+                const target = event.target;
+                if (target.classList.contains("btn-eliminar-punto")) {
+                    const puntoId = target.getAttribute("data-punto-id");
+                    const puntoCodigo = target.getAttribute("data-punto-codigo");
+
+                    const modalEliminarPunto = document.getElementById("modalEliminarPunto");
+                    modalEliminarPunto.querySelector(".modal-body").textContent = `¿Estás seguro que deseas eliminar el Punto "${puntoCodigo}"?`;
+
+                    const formEliminarPunto = document.getElementById("formEliminarPunto");
+                    formEliminarPunto.action = `/eliminar_punto/${puntoId}/`;
+                }
+            });
+        }
+        agregarEventoClickBotonEliminarPunto();
+        });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
         // Obtener el elemento de la ventana modal y el mensaje de alerta
         const modalAlert = document.getElementById("modalAlert");
         const modalAlertMessage = document.getElementById("modalAlertMessage");
