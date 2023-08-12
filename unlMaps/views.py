@@ -39,11 +39,10 @@ def crear_conexion(request):
 
                 # Crear la conexión
                 Conexion.objects.create(nodo_origen=punto_origen, nodo_destino=punto_destino)
+                Conexion.objects.create(nodo_origen=punto_destino, nodo_destino=punto_origen)
 
                 # Llamar a la función para actualizar el grafo
-                # actualizar_grafo()
-
-                #return redirect('calcular_distancia')
+                actualizar_grafo()
 
             except Punto.DoesNotExist:
                 return HttpResponse('Error: Uno o ambos puntos seleccionados no existen.')
@@ -232,13 +231,6 @@ def crear_punto(request):
 import json
 
 def actualizar_grafo():
-    # Obtener el grafo existente desde el objeto Mapa
-    mapa = Mapa.objects.first()
-    grafo_existente = mapa.grafo if mapa else {}
-
-    # Convertir la cadena de texto JSON en un diccionario
-    json_existente = json.loads(grafo_existente) if grafo_existente else {}
-
     # Obtener todos los puntos y conexiones existentes
     puntos = Punto.objects.all()
     conexiones = Conexion.objects.all()
@@ -259,21 +251,13 @@ def actualizar_grafo():
         distancia = ca(latitud_origen, longitud_origen, latitud_destino, longitud_destino)
         grafo[nodo_origen_id][nodo_destino_id] = distancia
 
-    # Combinar el grafo existente con las nuevas conexiones y distancias
-    json_actualizado = json_existente.copy()
+    # Obtener el mapa existente o crear uno nuevo si no existe
+    mapa, _ = Mapa.objects.get_or_create(nombre='Mapa')
 
-    for nodo_origen_id, conexiones_destino in grafo.items():
-        json_actualizado.setdefault(str(nodo_origen_id), {}).update(conexiones_destino)
-
-    # Guardar el JSON actualizado en el objeto Mapa
-    if mapa:
-        mapa.grafo = json.dumps(json_actualizado)  # Convertir a cadena de texto JSON
-        mapa.save()
-    else:
-        Mapa.objects.create(nombre='Mapa', grafo=json.dumps(json_actualizado))
-
-    # Imprimir el JSON del mapa en la consola
-    print(json.dumps(json_actualizado, indent=4))
+    # Guardar el grafo actualizado en el objeto Mapa
+    grafo_json = json.dumps(grafo)
+    mapa.grafo = grafo_json
+    mapa.save()
 
 
 
@@ -300,7 +284,7 @@ def cerrar_sesion(request):
     return redirect(reverse_lazy('login'))
 
 def puntos(request):
-    # Usar prefetch_related para obtener los puntos con sus conexiones salientes y entrantes en una sola consulta
+    # Usar prefetch_related para obtener los puntos con sus conexiones salientes en una sola consulta
     puntos_queryset = Punto.objects.all().prefetch_related('conexiones_salientes')
     puntos_list = [punto.as_dict() for punto in puntos_queryset]
 
