@@ -108,43 +108,17 @@
     max-height: 100%;
 }
 
-        #search-form {
-            /* Estilo del formulario ajustado */
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 360px;
-            padding: 20px;
-            margin-top: 2px;
-            margin-left: 40px;
-            margin-right: 5px;
-        }
-
-        #botonBuscar {
-            /* Estilo del botón Buscar ajustado */
-            background-color: #4CAF50;
-            color: #ffffff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-right: 5px; /* Agregado margen a la derecha */
-        }
-
-        #cancelar {
-            /* Estilo del botón Cancelar ajustado */
-            background-color: #4CAF50;
-            color: #ffffff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+#search-form {
+    display: none;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 500px; /* Cambia este valor a lo que necesites */
+    padding: 18px;
+    margin-top: 2px;
+    margin-left: 40px;
+    margin-right: 5px;
+}
 
 
 #search-form label,
@@ -153,6 +127,26 @@
     display: block;
     margin-bottom: 10px;
 }
+
+#botonBuscar {
+    background-color: #4CAF50;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+#cancelar {
+    background-color: #4CAF50;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
 #botonBuscar:hover {
     background-color: #1b8dbf;
 }
@@ -185,16 +179,19 @@
 
       <div id="logo-container">
         <img src="/static/imagenes/ir-a-ubicacion.png" alt="Logo" id="logo">
-      </div>
+        </div>
         <form id="search-form" style="display: none;">
             <label for="origen">Ingrese Origen:</label>
             <input type="text" id="origen" name="origen" required>
             <label for="destino">Ingrese Destino:</label>
             <input type="text" id="destino" name="destino" required>
-            <button type="button" id = "botonBuscar" onclick="buscarCamino()">Buscar</button>
-            <button id = "cancelar">Cancelar</button>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <button type="button" id="botonBuscar" onclick="buscarCamino()">Buscar</button>
+                <button id="cancelar">Cancelar</button>
+            </div>
         </form>
-      </div>
+        </div>
+
 
 
     <div id="info">
