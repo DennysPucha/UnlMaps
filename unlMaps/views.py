@@ -11,21 +11,60 @@ from django.shortcuts import render
 from .algoritmos.algoritmo import calcular_distancia as ca
 from django.http import JsonResponse
 
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.shortcuts import render, HttpResponse
+from .models import Punto, Conexion
+from django.db.models import Q
 def crear_conexion(request):
     if request.method == 'POST':
-        punto_origen_id = request.POST.get('punto_origen')
-        punto_destino_id = request.POST.get('punto_destino')
+        accion = request.POST.get('accion')
+        if accion == 'crear':
+            punto_origen_id = request.POST.get('punto_origen')
+            punto_destino_id = request.POST.get('punto_destino')
 
-        punto_origen = Punto.objects.get(id=punto_origen_id)
-        punto_destino = Punto.objects.get(id=punto_destino_id)
+            if punto_origen_id == punto_destino_id:
+                return HttpResponse('Error: El punto de origen y destino son iguales. Selecciona puntos diferentes.')
 
-        Conexion.objects.create(nodo_origen=punto_origen, nodo_destino=punto_destino)
-        Conexion.objects.create(nodo_origen=punto_destino, nodo_destino=punto_origen)
+            try:
+                # Verificar si la conexión ya existe
+                conexion_existente = Conexion.objects.filter(nodo_origen_id=punto_origen_id,
+                                                             nodo_destino_id=punto_destino_id).exists()
+                if conexion_existente:
+                    return HttpResponse('Error: La conexión ya existe.')
 
-        # Llamar a la función para actualizar el grafo
-        actualizar_grafo()
+                # Obtener los objetos de los puntos
+                punto_origen = Punto.objects.get(id=punto_origen_id)
+                punto_destino = Punto.objects.get(id=punto_destino_id)
 
-        return redirect('calcular_distancia')
+                # Crear la conexión
+                Conexion.objects.create(nodo_origen=punto_origen, nodo_destino=punto_destino)
+
+                # Llamar a la función para actualizar el grafo
+                # actualizar_grafo()
+
+                #return redirect('calcular_distancia')
+
+            except Punto.DoesNotExist:
+                return HttpResponse('Error: Uno o ambos puntos seleccionados no existen.')
+        elif accion == 'borrar':
+            punto_origen_id = request.POST.get('punto_origen')
+            punto_destino_id = request.POST.get('punto_destino')
+
+            if punto_origen_id == punto_destino_id:
+                return HttpResponse('Error: El punto de origen y destino son iguales. Selecciona puntos diferentes.')
+
+            try:
+                conexiones_a_borrar = Conexion.objects.filter(
+                    Q(nodo_origen_id=punto_origen_id, nodo_destino_id=punto_destino_id) |
+                    Q(nodo_origen_id=punto_destino_id, nodo_destino_id=punto_origen_id)
+                )
+
+                # Borrar las conexiones
+                conexiones_a_borrar.delete()
+
+            except Conexion.DoesNotExist:
+                return HttpResponse('Error: La conexión seleccionada no existe.')
 
     puntos = Punto.objects.all()
 
@@ -34,6 +73,8 @@ def crear_conexion(request):
     }
 
     return render(request, 'crear_conexion.html', context)
+
+
 
 def calcular_distancia(request):
     if request.method == 'POST':
@@ -259,8 +300,24 @@ def cerrar_sesion(request):
     return redirect(reverse_lazy('login'))
 
 def puntos(request):
+    # Usar prefetch_related para obtener los puntos con sus conexiones salientes y entrantes en una sola consulta
+    puntos_queryset = Punto.objects.all().prefetch_related('conexiones_salientes')
+    puntos_list = [punto.as_dict() for punto in puntos_queryset]
+
+    # Convertir la lista de puntos a formato JSON
+    puntos_json = json.dumps(puntos_list)
+
+    return render(request, 'vistaUsuario.html', {'puntos_json': puntos_json})
+
+def allPuntos(request):
     puntos_queryset = Punto.objects.all()
     puntos_list = [punto.as_dict() for punto in puntos_queryset]
     puntos_json = json.dumps(puntos_list)
 
-    return render(request, 'vistaUsuario.html', {'puntos_json': puntos_json})
+    return render(request, 'crear_conexion.html', {'puntos_json': puntos_json})
+
+
+def obtener_puntos(request):
+    puntos = Punto.objects.all().values()  # Obtiene todos los puntos desde la base de datos
+
+    return JsonResponse(list(puntos), safe=False)

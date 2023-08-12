@@ -25,6 +25,7 @@ from unlMaps import views
 from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('crear-conexion/', views.crear_conexion, name='crear_conexion'),
+    path('puntos/', views.allPuntos, name='all puntos'),
     path('calcular-distancia/', views.calcular_distancia, name='calcular_distancia'),
     path('seleccionar_tipo_de_nodo/', views.crear_objeto, name='crear_objeto'),
     path('crear_bloque/', views.crear_bloque, name='crear_bloque'),

@@ -35,19 +35,29 @@ class Punto(models.Model):
     facultad = models.ForeignKey(Facultad, on_delete=models.CASCADE)
 
     def as_dict(self):
-        # Retorna un diccionario con los datos del objeto Punto
+        # Obtener las conexiones salientes y sus coordenadas (latitud y longitud)
+        conexiones_salientes = [
+            {
+                'codigo': conexion.nodo_destino.codigo,
+                'latitud': conexion.nodo_destino.latitud,
+                'longitud': conexion.nodo_destino.longitud
+            }
+            for conexion in self.conexiones_salientes.all()
+        ]
+
+        # Crear el diccionario con los datos del objeto Punto
         return {
             'codigo': self.codigo,
             'latitud': self.latitud,
             'longitud': self.longitud,
             'descripcion': self.descripcion,
-            # Puedes agregar otros campos del modelo que desees incluir en el diccionario
+            'facultad': self.facultad.nombre,
+            'conexiones_salientes': conexiones_salientes,
         }
-
-
 
     def __str__(self):
         return self.codigo
+
 
 class Bloque(Punto):
     informacion = models.CharField(max_length=100)
@@ -63,5 +73,7 @@ class Conexion(models.Model):
 
     def __str__(self):
         return f"Conexión de {self.nodo_origen} a {self.nodo_destino}"
+
+
 
 
