@@ -1,73 +1,98 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <link rel="shortcut icon" href="#"/>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Inicio</title>
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
-
-    <!-- Hoja de Estilos de Sweet Alert -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap 5 Template</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<style>
+    body {
+        background-color: #cff4fc;
+    }
+
+    .col-md-4 {
+        margin-top: 2em;
+    }
+</style>
 
 <body>
-<div id="inicio">
-    <h2>Bienvenido</h2>
-    <p>¡Has iniciado sesión exitosamente!</p>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="#">UnlMaps</a>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Cerrar sesión</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</nav>
 
-    <!-- Botón de cierre de sesión -->
-    <form action="{% url 'logout' %}" method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Cerrar sesión</button>
-    </form>
-</div>
-
-
-{% if messages %}
-    <div class="modal fade" id="modalAlertInicio" tabindex="-1" aria-labelledby="modalAlertLabelInicio"
-         aria-hidden="true"
-         data-message="{{ messages }}">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalAlertLabelInicio">Mensaje de Alerta</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <ul class="list-group">
-                        {% for message in messages %}
-                            <li class="list-group-item{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Facultades</h5>
+                    <p class="card-text">Gestiona las facultades existentes</p>
+                    <a href="{% url 'gestionar_facultades' %}" class="btn btn-primary">Ir a la página</a>
                 </div>
             </div>
         </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Bloques y puntos</h5>
+                    <p class="card-text">Gestiona los bloques y puntos</p>
+                    <a href="{% url 'gestionar_bloques_puntos' %}" class="btn btn-primary">Ir a la página</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Cuenta</h5>
+                    <p class="card-text">Gestiona la cuenta de Admin</p>
+                    <a href="{% url 'gestionar_cuenta' %}" class="btn btn-primary">Ir a la página</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Administrar Mapa</h5>
+                    <p class="card-text">Gestiona el mapa de la universidad</p>
+                    <a href="#" class="btn btn-primary">Ir a la página</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Grafo</h5>
+                    <p class="card-text">Visualizar el grafo</p>
+                    <a href="{% url 'vista_grafo_admin' %}" class="btn btn-primary">Ir a la página</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Mapa de usuario</h5>
+                    <p class="card-text">Visualizar el mapa de usuario</p>
+                    <a href="" class="btn btn-primary">Ir a la página</a>
+                </div>
+            </div>
+        </div>
+
     </div>
-{% endif %}
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Obtener el elemento de la ventana modal y el mensaje de alerta
-        const modalAlert = document.getElementById("modalAlertInicio");
-        const modalAlertMessage = document.getElementById("modalAlertMessage");
+</div>
 
-        // Verificar si hay un mensaje de alerta
-        const message = modalAlert.getAttribute("data-message");
-        if (message) {
-            modalAlertMessage.textContent = message;
-            $('#modalAlertInicio').modal('show'); // Mostrar el modalAlertInicio
-        }
-    });
-</script>
-<script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 </body>
-
 </html>

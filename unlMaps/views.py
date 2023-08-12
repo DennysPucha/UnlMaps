@@ -1,4 +1,5 @@
 from django.contrib.auth import logout, authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.contrib import messages
 from .models import Conexion, Mapa, Cuenta
@@ -89,6 +90,7 @@ def admin(request):
 
 # "{\"A17\": {}, \"A41\": {}, \"A40\": {} }"--> forma en como guarda los puntos
 
+
 def actualizar_grafo():
     # Obtener todos los puntos y conexiones existentes
     puntos = Punto.objects.all()
@@ -127,14 +129,14 @@ def iniciar_sesion(request):
         if user is not None:
             login(request, user)
             return redirect(
-                'inicio')  # Reemplaza 'inicio' con el nombre de la vista a la que deseas redirigir después del inicio de sesión
+                'inicio')
         else:
             error_message = "Credenciales inválidas. Inténtalo nuevamente."
             return render(request, 'login.html', {'error_message': error_message})
 
     return render(request, 'login.html')
 
-
+@login_required
 def inicio(request):
     if 'success_message' in request.session:
         success_message = request.session['success_message']
@@ -144,7 +146,7 @@ def inicio(request):
 
     return render(request, 'inicio.html', {'success_message': success_message})
 
-
+@login_required
 def cerrar_sesion(request):
     logout(request)
     return redirect(reverse_lazy('login'))
@@ -153,7 +155,7 @@ def cerrar_sesion(request):
 def index(request):
     return render(request, 'index.html')
 
-
+@login_required
 def gestionar_facultades(request):
     facultades = Facultad.objects.all()
 
@@ -186,7 +188,7 @@ def gestionar_facultades(request):
 
     return render(request, 'gestionar_facultades.html', {'facultades': facultades})
 
-
+@login_required
 def editar_facultad(request, facultad_id):
     facultad = get_object_or_404(Facultad, id=facultad_id)
 
@@ -216,7 +218,7 @@ def editar_facultad(request, facultad_id):
         foto_url = facultad.foto.url if facultad.foto else None
         return render(request, 'editar_facultad.html', {'facultad': facultad, 'foto_url': foto_url})
 
-
+@login_required
 def eliminar_facultad(request, facultad_id):
     facultad = get_object_or_404(Facultad, id=facultad_id)
 
@@ -228,7 +230,7 @@ def eliminar_facultad(request, facultad_id):
 
     return render(request, 'eliminar_facultad.html', {'facultad': facultad})
 
-
+@login_required
 def gestionar_bloques_puntos(request):
     bloques = Bloque.objects.all()
     facultades = Facultad.objects.all()
@@ -243,7 +245,7 @@ def gestionar_bloques_puntos(request):
     return render(request, 'gestionar_bloques_puntos.html',
                   {'bloques': bloques, 'puntos': puntos, 'facultades': facultades, 'success_message': success_message})
 
-
+@login_required
 def crear_bloque(request):
     if request.method == 'POST':
 
@@ -301,7 +303,7 @@ def crear_bloque(request):
         facultades = Facultad.objects.all()
         return render(request, 'crear_bloque.html', {'facultades': facultades})
 
-
+@login_required
 def crear_punto(request):
     if request.method == 'POST':
         # Obtener los datos del formulario
@@ -337,7 +339,7 @@ def crear_punto(request):
         facultades = Facultad.objects.all()
         return render(request, 'crear_punto.html', {'facultades': facultades})
 
-
+@login_required
 def editar_bloque(request, bloque_id):
     bloque = get_object_or_404(Bloque, id=bloque_id)
 
@@ -395,7 +397,7 @@ def editar_bloque(request, bloque_id):
         facultades = Facultad.objects.all()  # Obtener todas las facultades para mostrar en el formulario
         return render(request, 'editar_bloque.html', {'bloque': bloque, 'foto_url': foto_url, 'facultades': facultades})
 
-
+@login_required
 def editar_punto(request, punto_id):
     punto = get_object_or_404(Punto, id=punto_id)
 
@@ -433,14 +435,14 @@ def editar_punto(request, punto_id):
         facultades = Facultad.objects.all()  # Obtener todas las facultades para mostrar en el formulario
         return render(request, 'editar_punto.html', {'punto': punto, 'facultades': facultades})
 
-
+@login_required
 def buscar_facultades(request):
     if request.method == 'GET':
         search_text = request.GET.get('search_text')
         facultades = Facultad.objects.filter(nombre__icontains=search_text)
         return render(request, 'resultados_busqueda_facultades.html', {'facultades': facultades})
 
-
+@login_required
 def buscar_bloques(request):
     if request.method == 'GET':
         search_text = request.GET.get('search_text')
@@ -456,7 +458,7 @@ def buscar_bloques(request):
 
         return render(request, 'resultados_busqueda_bloques.html', {'bloques': bloques})
 
-
+@login_required
 def buscar_puntos(request):
     if request.method == 'GET':
         search_text = request.GET.get('search_text_puntos')
@@ -472,7 +474,7 @@ def buscar_puntos(request):
 
         return render(request, 'resultados_busqueda_puntos.html', {'puntos': puntos})
 
-
+@login_required
 def gestionar_cuenta_view(request):
     mapa = get_object_or_404(Mapa, nombre="Mapa")
     cuenta = mapa.cuenta
@@ -513,7 +515,7 @@ def gestionar_cuenta_view(request):
 
     return render(request, 'gestionar_cuenta.html', {'cuenta': cuenta})
 
-
+@login_required
 def eliminar_bloque(request, bloque_id):
     bloque = get_object_or_404(Bloque, id=bloque_id)
 
@@ -525,7 +527,7 @@ def eliminar_bloque(request, bloque_id):
 
     return render(request, 'eliminar_bloque.html', {'bloque': bloque})
 
-
+@login_required
 def eliminar_punto(request, punto_id):
     punto = get_object_or_404(Punto, id=punto_id)
 
@@ -536,3 +538,19 @@ def eliminar_punto(request, punto_id):
         return redirect('gestionar_bloques_puntos')
 
     return render(request, 'eliminar_punto.html', {'punto': punto})
+
+@login_required
+def vista_grafo_admin(request):
+    mapa = Mapa.objects.get(nombre='Mapa')
+    grafo_data = mapa.grafo
+    grafo_dict = json.loads(grafo_data)
+
+    nodes = []
+    links = []
+
+    for source_node, connections in grafo_dict.items():
+        nodes.append({"id": source_node})
+        for target_node in connections:
+            links.append({"source": source_node, "target": target_node})
+
+    return render(request, 'vista_grafo_admin.html', {'nodes': nodes, 'links': links})

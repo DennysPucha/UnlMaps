@@ -45,4 +45,5 @@ urlpatterns = [
     path('eliminar_bloque/<int:bloque_id>/', views.eliminar_bloque, name='eliminar_bloque'),
     path('gestionar_bloques_puntos/', views.gestionar_bloques_puntos, name='gestionar_bloques_puntos'),
     path('gestionar_cuenta/', views.gestionar_cuenta_view, name='gestionar_cuenta'),
+    path('vista_grafo_admin/', views.vista_grafo_admin, name='vista_grafo_admin'),
 ]
