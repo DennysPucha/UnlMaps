@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap 5 Template</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<style>
+    body {
+        background-color: #cff4fc;
+    }
+
+    .col-md-4 {
+        margin-top: 2em;
+    }
+</style>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="#">UnlMaps</a>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Cerrar sesión</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Facultades</h5>
+                    <p class="card-text">Gestiona las facultades existentes</p>
+                    <a href="{% url 'gestionar_facultades' %}" class="btn btn-primary">Ir a la página</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Bloques y puntos</h5>
+                    <p class="card-text">Gestiona los bloques y puntos</p>
+                    <a href="{% url 'gestionar_bloques_puntos' %}" class="btn btn-primary">Ir a la página</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Cuenta</h5>
+                    <p class="card-text">Gestiona la cuenta de Admin</p>
+                    <a href="{% url 'gestionar_cuenta' %}" class="btn btn-primary">Ir a la página</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Administrar Mapa</h5>
+                    <p class="card-text">Gestiona el mapa de la universidad</p>
+                    <a href="{% url 'crear_conexion' %}" class="btn btn-primary">Ir a la página</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Grafo</h5>
+                    <p class="card-text">Visualizar el grafo</p>
+                    <a href="{% url 'vista_grafo_admin' %}" class="btn btn-primary">Ir a la página</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Mapa de usuario</h5>
+                    <p class="card-text">Visualizar el mapa de usuario</p>
+                    <a href="{% url 'puntos' %}" class="btn btn-primary">Ir a la página</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

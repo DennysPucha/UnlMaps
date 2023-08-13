@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>INLMaps</title>
+    <link rel="stylesheet" href="https://openlayers.org/en/v6.13.0/css/ol.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+#search-container {
+    position: absolute;
+    top: 20px;
+    left: 20px; /* Alineamos el buscador a la izquierda */
+    z-index: 9999;
+    display: flex;
+}
+
+#search-input {
+    width: 200px;
+    height: 40px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 20px 0 0 20px;
+    outline: none;
+}
+
+#search-button {
+    width: 80px;
+    height: 40px;
+    padding: 8px 16px;
+    border: 0.1px solid #000000;
+    border-radius: 0 20px 20px 0;
+    background-color: #26ADE4;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#search-button:hover {
+    background-color: #1b8dbf;
+}
+
+#info {
+    position: absolute;
+    top: 80px;
+    left: 20px; /* Alineamos el contenedor de información a la izquierda */
+    z-index: 9999;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    width: 100%;
+}
+
+#info-content {
+    text-align: justify;
+    line-height: 1.6;
+    padding: 0 25px;
+}
+
+#map {
+    width: 100%;
+    height: 100vh;
+}
+#logo-container {
+  width: 40px;
+  height: 40px;
+  background-color: #26ADE4;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 5px;
+}
+
+#logo-container img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+#logo-container {
+    width: 40px;
+    height: 40px;
+    background-color: #26ADE4;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 10px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+#logo-container:hover {
+    background-color: #1b8dbf;
+}
+
+#logo-container img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+#search-form {
+    display: none;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 500px; /* Cambia este valor a lo que necesites */
+    padding: 18px;
+    margin-top: 2px;
+    margin-left: 40px;
+    margin-right: 5px;
+}
+
+
+#search-form label,
+#search-form input,
+#search-form button {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#botonBuscar {
+    background-color: #4CAF50;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+#cancelar {
+    background-color: #4CAF50;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#botonBuscar:hover {
+    background-color: #1b8dbf;
+}
+
+/* Estilos para los botones */
+.boton-estilo {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 15px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+
+    </style>
+
+
+</head>
+
+<body>
+    <div id="search-container">
+        <input type="text" id="search-input" placeholder="Buscar...">
+        <button id="search-button" onclick="buscaMarcador()">Buscar</button>
+
+      <div id="logo-container">
+        <img src="/static/imagenes/ir-a-ubicacion.png" alt="Logo" id="logo">
+        </div>
+        <form id="search-form" style="display: none;">
+            <label for="origen">Ingrese Origen:</label>
+            <input type="text" id="origen" name="origen" required>
+            <label for="destino">Ingrese Destino:</label>
+            <input type="text" id="destino" name="destino" required>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <button type="button" id="botonBuscar" onclick="buscarCamino()">Buscar</button>
+                <button id="cancelar">Cancelar</button>
+            </div>
+        </form>
+        </div>
+
+
+
+    <div id="info">
+        <div id="info-content"></div>
+    </div>
+
+    <div id="map"></div>
+
+    <script src="https://openlayers.org/en/v6.13.0/build/ol.js"></script>
+    <script src="/static/js/script.js"></script>
+<script>
+    const grafo = {{ grafo_json|safe }};
+    console.log(grafo);
+    const puntos = grafo['Mapa']['puntos']; // Reemplaza 'nombre_del_mapa' por el nombre correcto
+    const puntosObtenidos = [];
+
+    // Itera sobre los puntos y obtén las coordenadas de las conexiones
+    for (const punto of puntos) {
+        const conexiones = punto['conexiones'];
+        const conexiones_salientes = [];
+
+        for (const conexion of conexiones) {
+            const destinoCodigo = conexion['destino'];
+            const destinoPunto = puntos.find(p => p.codigo === destinoCodigo);
+
+            if (destinoPunto) {
+                conexiones_salientes.push({
+                    codigo: destinoPunto.codigo,
+                    latitud: destinoPunto.latitud,
+                    longitud: destinoPunto.longitud
+                });
+            }
+        }
+
+        punto['conexiones_salientes'] = conexiones_salientes;
+
+        puntosObtenidos.push(punto);
+    }
+
+    console.log(puntosObtenidos);
+    mostrarPuntos(puntosObtenidos);
+
+    function buscaMarcador() {
+        console.log("si");
+        buscarMarcador(puntosObtenidos);
+    }
+
+    function buscarCamino() {
+        crearGrafo(puntosObtenidos);
+    }
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,17 @@
+<div class="modal-header">
+    <h5 class="modal-title" id="modalEliminarFacultadLabel">Confirmar Eliminación</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <!-- Aquí agregamos el mensaje de confirmación de eliminación -->
+    <p>¿Estás seguro que deseas eliminar la facultad "<span id="facultadNombreEliminar"></span>"?</p>
+</div>
+<div class="modal-footer">
+    <!-- Botón de "Cancelar" que cierra el modal sin realizar ninguna acción -->
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <!-- Botón de "Eliminar" que confirma la acción y envía el formulario de eliminación -->
+    <form id="formEliminarFacultad" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+    </form>
+</div>

@@ -1,0 +1,26 @@
+<form method="post" action="{% url 'calcular_distancia' %}">
+  {% csrf_token %}
+  <label for="start_node">Nodo de inicio:</label>
+  <select name="start_node" id="start_node">
+    {% for punto in puntos %}
+      <option value="{{ punto.id }}">{{ punto.codigo }}</option>
+    {% endfor %}
+  </select>
+
+  <label for="end_node">Nodo de destino:</label>
+  <select name="end_node" id="end_node">
+    {% for punto in puntos %}
+      <option value="{{ punto.id }}">{{ punto.codigo }}</option>
+    {% endfor %}
+  </select>
+
+  <button type="submit">Calcular</button>
+</form>
+
+{% if start_node and end_node and distance and path %}
+  <p>La distancia más corta entre {{ start_node }} y {{ end_node }} es: {{ distance|floatformat:2 }} metros.</p>
+  <p>Camino más corto: {% for node in path %}{{ node }} {% endfor %}</p>
+{% else %}
+  <p>No se encontró una distancia válida.</p>
+  <a href="{% url 'crear_conexion' %}">Crear Conexión</a>
+{% endif %}

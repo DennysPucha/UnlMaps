@@ -1,0 +1,28 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Conexión ya existente</title>
+    <style>
+      body {
+        background-color: #0d6efd;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col text-center">
+          <h1 class="display-4 text-dark"><b>Error</b> con las conexiones</h1>
+          <p class="font-weight-bold mt-3">La conexión no existe en la bdd
+          </p>
+          <img src="{% static 'Recursos/errorNodo.png' %}" class="img-fluid" style="max-width: 25%;" alt="...">
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-DiG4WpW/hd9GhQWOKjRnVviMdjL6Fhy5n4nL+stvabTJHZKpF2ypCq+mbRfxlM9T" crossorigin="anonymous"></script>
+  </body>
+</html>

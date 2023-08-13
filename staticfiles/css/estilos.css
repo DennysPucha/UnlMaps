@@ -1,0 +1,65 @@
+
+body {
+    background-size: cover;
+    background-position: center;
+
+  }
+
+
+#pag-inicio {
+    margin: 0;
+        padding: 0;
+        background: linear-gradient(to right, #91da55, #59e9a1);
+}
+
+
+#login .container #login-row #login-column #login-box {
+    /*Margen Superior */
+    margin-top: 40px;
+    /*Maximo de Ancho */
+    max-width: 400px;
+    /*Altura de Caja */
+    height: 450px;
+    /*Estilos para las sombras de la caja */
+    box-shadow: 0px 0px 6px 6px #1783e7;
+    /*Bordes redondeados  */
+    border-radius: 15px;
+    /* Centrar */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+label[for="password"] {
+    margin-left: 40px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+
+}
+label[for="usuario"] {
+    margin-left: 40px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+
+}
+
+input#usuario {
+    width: 320px;
+    height: 35px;
+    margin: 0 auto;
+}
+
+
+input#password {
+    width: 320px;
+    height: 35px;
+    margin: 0 auto;
+}
+
+img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  
