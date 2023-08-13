@@ -92,7 +92,7 @@ def crear_conexion(request):
 
     return render(request, 'crear_conexion.html', {'grafo_json': grafo_json})
 
-@login_required
+
 def calcular_distancia(request):
     if request.method == 'POST':
         start_node_id = request.POST.get('start_node')
@@ -156,7 +156,6 @@ def buscar(request):
 
     return render(request, 'vistaUsuario.html', {'bloques_encontrados': bloques_encontrados})
 
-@login_required
 def actualizar_grafo():
     # Obtener todos los puntos y conexiones existentes
     puntos = Punto.objects.all()
