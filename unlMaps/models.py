@@ -37,10 +37,39 @@ class Punto(models.Model):
     def __str__(self):
         return self.codigo
 
+    def as_dict(self):
+        punto_data = {
+            'codigo': self.codigo,
+            'latitud': self.latitud,
+            'longitud': self.longitud,
+            'descripcion': self.descripcion,
+            'facultad': self.facultad.nombre,
+        }
+
+        if hasattr(self, 'bloque'):
+            punto_data['valoracion'] = self.bloque.valoracion
+            punto_data['informacion'] = self.bloque.informacion
+            punto_data['foto'] = self.bloque.foto.path if self.bloque.foto else None
+
+        return punto_data
+
 class Bloque(Punto):
     informacion = models.CharField(max_length=100)
     valoracion = models.IntegerField(default=0)
     foto = models.ImageField(upload_to=get_image_path, blank=True)
+
+    def __str__(self):
+        return self.codigo
+
+    def as_dict(self):
+        punto_data = super().as_dict()
+        bloque_data = {
+            'valoracion': self.valoracion,
+            'informacion': self.informacion,
+            'foto': self.foto.path if self.foto else None,
+        }
+        punto_data.update(bloque_data)
+        return punto_data
 
     def __str__(self):
         return self.codigo

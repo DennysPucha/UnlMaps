@@ -1,5 +1,7 @@
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from django.http import HttpResponse, JsonResponse
 from django.urls import reverse_lazy
 from django.contrib import messages
 from .models import Conexion, Mapa, Cuenta
@@ -10,32 +12,87 @@ from django.shortcuts import render
 from .algoritmos.algoritmo import calcular_distancia as ca
 import json
 
-
+@login_required
 def crear_conexion(request):
     if request.method == 'POST':
-        punto_origen_id = request.POST.get('punto_origen')
-        punto_destino_id = request.POST.get('punto_destino')
+        accion = request.POST.get('accion')
+        if accion == 'crear':
+            punto_origen_codigo = request.POST.get('punto_origen')
+            punto_destino_codigo = request.POST.get('punto_destino')
 
-        punto_origen = Punto.objects.get(id=punto_origen_id)
-        punto_destino = Punto.objects.get(id=punto_destino_id)
+            if punto_origen_codigo == punto_destino_codigo:
+                return render(request, 'error_puntos_iguales.html')
 
-        Conexion.objects.create(nodo_origen=punto_origen, nodo_destino=punto_destino)
-        Conexion.objects.create(nodo_origen=punto_destino, nodo_destino=punto_origen)
+            try:
+                conexion_existente = Conexion.objects.filter(nodo_origen__codigo=punto_origen_codigo,
+                                                             nodo_destino__codigo=punto_destino_codigo).exists()
+                if conexion_existente:
+                    return render(request, 'error_conexion_existente.html')
 
-        # Llamar a la función para actualizar el grafo
-        actualizar_grafo()
+                punto_origen = Punto.objects.get(codigo=punto_origen_codigo)
+                punto_destino = Punto.objects.get(codigo=punto_destino_codigo)
 
-        return redirect('calcular_distancia')
+                Conexion.objects.create(nodo_origen=punto_origen, nodo_destino=punto_destino)
+                Conexion.objects.create(nodo_origen=punto_destino, nodo_destino=punto_origen)
 
-    puntos = Punto.objects.all()
+                actualizar_grafo()
 
-    context = {
-        'puntos': puntos,
-    }
+            except Punto.DoesNotExist:
+                return render(request, 'error_no_existen.html')
+        elif accion == 'borrar':
+            punto_origen_codigo = request.POST.get('punto_origen')
+            punto_destino_codigo = request.POST.get('punto_destino')
 
-    return render(request, 'crear_conexion.html', context)
+            if punto_origen_codigo == punto_destino_codigo:
+                return render(request, 'error_puntos_iguales.html')
 
+            try:
+                conexiones_a_borrar = Conexion.objects.filter(
+                    Q(nodo_origen__codigo=punto_origen_codigo, nodo_destino__codigo=punto_destino_codigo) |
+                    Q(nodo_origen__codigo=punto_destino_codigo, nodo_destino__codigo=punto_origen_codigo)
+                )
+                conexiones_a_borrar.delete()
 
+            except Conexion.DoesNotExist:
+                return render(request, 'error_conexion_no_existente.html')
+
+    mapas_queryset = Mapa.objects.prefetch_related(
+        'facultad_set__punto_set__conexiones_salientes',
+        'facultad_set__punto_set__bloque'
+    ).all()
+
+    grafo = {}
+    for mapa in mapas_queryset:
+        puntos = []
+
+        for facultad in mapa.facultad_set.all():
+            for punto in facultad.punto_set.all():
+                punto_data = punto.as_dict()
+                punto_data['conexiones'] = [
+                    {
+                        'origen': conexion.nodo_origen.codigo,
+                        'destino': conexion.nodo_destino.codigo,
+                    }
+                    for conexion in punto.conexiones_salientes.all()
+                ]
+                if isinstance(punto, Bloque):
+                    bloque = punto.bloque
+                    punto_data.update({
+                        'valoracion': bloque.valoracion,
+                        'informacion': bloque.informacion,
+                        'foto': bloque.foto.path if bloque.foto else None,
+                    })
+                puntos.append(punto_data)
+
+        grafo[mapa.nombre] = {
+            'puntos': puntos,
+        }
+
+    grafo_json = json.dumps(grafo)
+
+    return render(request, 'crear_conexion.html', {'grafo_json': grafo_json})
+
+@login_required
 def calcular_distancia(request):
     if request.method == 'POST':
         start_node_id = request.POST.get('start_node')
@@ -83,14 +140,23 @@ def calcular_distancia(request):
     return render(request, 'calcular_distancia.html', context)
 
 
-def admin(request):
-    facultades = Facultad.objects.all()
-    return render(request, 'admin.html', {'facultades': facultades})
-
-
 # "{\"A17\": {}, \"A41\": {}, \"A40\": {} }"--> forma en como guarda los puntos
 
+def buscar(request):
+    if request.method == 'POST':
+        selector = request.POST['selector']
+        buscar = request.POST['buscar']
 
+        if selector == 'Bloque':
+            # Buscar todos los bloques que coincidan con la entrada de búsqueda
+            bloques_encontrados = Bloque.objects.filter(codigo=buscar)
+        else:
+            # Buscar todos los bloques que coincidan con la facultad
+            bloques_encontrados = Bloque.objects.filter(facultad__nombre=buscar)
+
+    return render(request, 'vistaUsuario.html', {'bloques_encontrados': bloques_encontrados})
+
+@login_required
 def actualizar_grafo():
     # Obtener todos los puntos y conexiones existentes
     puntos = Punto.objects.all()
@@ -136,6 +202,7 @@ def iniciar_sesion(request):
 
     return render(request, 'login.html')
 
+
 @login_required
 def inicio(request):
     if 'success_message' in request.session:
@@ -146,6 +213,7 @@ def inicio(request):
 
     return render(request, 'inicio.html', {'success_message': success_message})
 
+
 @login_required
 def cerrar_sesion(request):
     logout(request)
@@ -154,6 +222,7 @@ def cerrar_sesion(request):
 
 def index(request):
     return render(request, 'index.html')
+
 
 @login_required
 def gestionar_facultades(request):
@@ -188,6 +257,7 @@ def gestionar_facultades(request):
 
     return render(request, 'gestionar_facultades.html', {'facultades': facultades})
 
+
 @login_required
 def editar_facultad(request, facultad_id):
     facultad = get_object_or_404(Facultad, id=facultad_id)
@@ -218,6 +288,7 @@ def editar_facultad(request, facultad_id):
         foto_url = facultad.foto.url if facultad.foto else None
         return render(request, 'editar_facultad.html', {'facultad': facultad, 'foto_url': foto_url})
 
+
 @login_required
 def eliminar_facultad(request, facultad_id):
     facultad = get_object_or_404(Facultad, id=facultad_id)
@@ -229,6 +300,7 @@ def eliminar_facultad(request, facultad_id):
         return redirect('gestionar_facultades')
 
     return render(request, 'eliminar_facultad.html', {'facultad': facultad})
+
 
 @login_required
 def gestionar_bloques_puntos(request):
@@ -244,6 +316,7 @@ def gestionar_bloques_puntos(request):
 
     return render(request, 'gestionar_bloques_puntos.html',
                   {'bloques': bloques, 'puntos': puntos, 'facultades': facultades, 'success_message': success_message})
+
 
 @login_required
 def crear_bloque(request):
@@ -303,6 +376,7 @@ def crear_bloque(request):
         facultades = Facultad.objects.all()
         return render(request, 'crear_bloque.html', {'facultades': facultades})
 
+
 @login_required
 def crear_punto(request):
     if request.method == 'POST':
@@ -338,6 +412,7 @@ def crear_punto(request):
     else:
         facultades = Facultad.objects.all()
         return render(request, 'crear_punto.html', {'facultades': facultades})
+
 
 @login_required
 def editar_bloque(request, bloque_id):
@@ -397,6 +472,7 @@ def editar_bloque(request, bloque_id):
         facultades = Facultad.objects.all()  # Obtener todas las facultades para mostrar en el formulario
         return render(request, 'editar_bloque.html', {'bloque': bloque, 'foto_url': foto_url, 'facultades': facultades})
 
+
 @login_required
 def editar_punto(request, punto_id):
     punto = get_object_or_404(Punto, id=punto_id)
@@ -435,12 +511,14 @@ def editar_punto(request, punto_id):
         facultades = Facultad.objects.all()  # Obtener todas las facultades para mostrar en el formulario
         return render(request, 'editar_punto.html', {'punto': punto, 'facultades': facultades})
 
+
 @login_required
 def buscar_facultades(request):
     if request.method == 'GET':
         search_text = request.GET.get('search_text')
         facultades = Facultad.objects.filter(nombre__icontains=search_text)
         return render(request, 'resultados_busqueda_facultades.html', {'facultades': facultades})
+
 
 @login_required
 def buscar_bloques(request):
@@ -458,6 +536,7 @@ def buscar_bloques(request):
 
         return render(request, 'resultados_busqueda_bloques.html', {'bloques': bloques})
 
+
 @login_required
 def buscar_puntos(request):
     if request.method == 'GET':
@@ -473,6 +552,7 @@ def buscar_puntos(request):
             puntos = puntos.filter(facultad__id=facultad_id)
 
         return render(request, 'resultados_busqueda_puntos.html', {'puntos': puntos})
+
 
 @login_required
 def gestionar_cuenta_view(request):
@@ -515,6 +595,7 @@ def gestionar_cuenta_view(request):
 
     return render(request, 'gestionar_cuenta.html', {'cuenta': cuenta})
 
+
 @login_required
 def eliminar_bloque(request, bloque_id):
     bloque = get_object_or_404(Bloque, id=bloque_id)
@@ -527,6 +608,7 @@ def eliminar_bloque(request, bloque_id):
 
     return render(request, 'eliminar_bloque.html', {'bloque': bloque})
 
+
 @login_required
 def eliminar_punto(request, punto_id):
     punto = get_object_or_404(Punto, id=punto_id)
@@ -538,6 +620,7 @@ def eliminar_punto(request, punto_id):
         return redirect('gestionar_bloques_puntos')
 
     return render(request, 'eliminar_punto.html', {'punto': punto})
+
 
 @login_required
 def vista_grafo_admin(request):
@@ -554,3 +637,56 @@ def vista_grafo_admin(request):
             links.append({"source": source_node, "target": target_node})
 
     return render(request, 'vista_grafo_admin.html', {'nodes': nodes, 'links': links})
+
+
+def puntos(request):
+    mapas_queryset = Mapa.objects.prefetch_related(
+        'facultad_set__punto_set__conexiones_salientes',
+        'facultad_set__punto_set__bloque'
+    ).all()
+
+    grafo = {}
+    for mapa in mapas_queryset:
+        puntos = []
+
+        for facultad in mapa.facultad_set.all():
+            for punto in facultad.punto_set.all():
+                punto_data = punto.as_dict()
+                punto_data['conexiones'] = [
+                    {
+                        'origen': conexion.nodo_origen.codigo,
+                        'destino': conexion.nodo_destino.codigo,
+                    }
+                    for conexion in punto.conexiones_salientes.all()
+                ]
+                if isinstance(punto, Bloque):
+                    bloque = punto.bloque
+                    punto_data.update({
+                        'valoracion': bloque.valoracion,
+                        'informacion': bloque.informacion,
+                        'foto': bloque.foto.path if bloque.foto else None,
+                    })
+                puntos.append(punto_data)
+
+        grafo[mapa.nombre] = {
+            'puntos': puntos,
+        }
+
+    grafo_json = json.dumps(grafo)
+
+    return render(request, 'vistaUsuario.html', {'grafo_json': grafo_json})
+
+
+
+def allPuntos(request):
+    puntos_queryset = Punto.objects.all()
+    puntos_list = [punto.as_dict() for punto in puntos_queryset]
+    puntos_json = json.dumps(puntos_list)
+
+    return render(request, 'crear_conexion.html', {'puntos_json': puntos_json})
+
+
+def obtener_puntos(request):
+    puntos = Punto.objects.all().values()
+
+    return JsonResponse(list(puntos), safe=False)
