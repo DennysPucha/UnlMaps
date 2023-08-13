@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CrearConexiones</title>
+    <link rel="stylesheet" href="https://openlayers.org/en/v6.13.0/css/ol.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #cff4fc;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-toggler-hidden {
+            display: none;
+        }
+
+
+        h1 {
+            font-size: 28px;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        #map {
+            width: 500px;
+            height: 500px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 20px;
+        }
+
+        /* Estilos para el contenedor */
+        .contenedor {
+            display: flex;
+        }
+
+        /* Estilos para el mapa y el cuadro */
+        #map,
+        .cuadro {
+            flex: 1;
+        }
+
+        /* Estilos para los cuadros */
+        .cuadro {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 200px;
+            height: 160px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 20px;
+            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            margin-top: 5px;
+            margin-left: 5px;
+        }
+
+
+        label {
+            font-size: 14px;
+            color: #333;
+            margin-right: 100px;
+            margin-top: 0px;
+            margin-left: 4px;
+        }
+
+        select {
+            width: 200px;
+            height: 30px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 5px;
+        }
+
+        button {
+            width: 140px;
+            height: 40px;
+            background-color: #26ADE4;
+            color: #fff;
+            border: none;
+            margin: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #1b8dbf;
+        }
+
+        /* Estilos para la lista y el scroll */
+        .lista-con-scroll {
+            display: flex;
+            flex-direction: row;
+        }
+
+        ul {
+            padding-left: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        #custom-navbar {
+            margin-bottom: 2em;
+            background-color: #0d6efd;
+        }
+
+        .align-right {
+            display: flex;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primarybo" id="custom-navbar">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Gestionar Mapa</a>
+        <button class="navbar-toggler navbar-toggler-hidden" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto"> <!-- Utilizamos "ml-auto" para alinear a la derecha -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'inicio' %}">Página de Inicio</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="contenedor">
+    <div class="cuadro">
+        <form method="post" action="{% url 'crear_conexion' %}">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td><label for="punto_origen">Punto de origen:</label></td>
+                    <td><input name="punto_origen" id="punto_origen"></td>
+                </tr>
+                <tr>
+                    <td><label for="punto_destino">Punto de destino:</label></td>
+                    <td><input name="punto_destino" id="punto_destino"></td>
+                </tr>
+                <tr>
+                    <td>
+                        <button type="submit" name="accion" value="crear">Crear Conexión</button>
+                    </td>
+                    <td>
+                        <button type="submit" name="accion" value="borrar">Borrar Conexión</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div id="map"></div>
+</div>
+<div id="info">
+    <!-- Aquí se mostrará el recuadro con información adicional -->
+    <div id="info-content"></div>
+</div>
+
+<script src="https://openlayers.org/en/v6.13.0/build/ol.js"></script>
+<script src="/static/js/crearConexiones.js"></script>
+<script>
+    const grafo = {{ grafo_json|safe }};
+    const puntos = grafo['Mapa']['puntos'];
+    const puntosObtenidos = [];
+
+    for (const punto of puntos) {
+        const conexiones = punto['conexiones'];
+        const conexiones_salientes = [];
+
+        for (const conexion of conexiones) {
+            const destinoCodigo = conexion['destino'];
+            const destinoPunto = puntos.find(p => p.codigo === destinoCodigo);
+
+            if (destinoPunto) {
+                conexiones_salientes.push({
+                    codigo: destinoPunto.codigo,
+                    latitud: destinoPunto.latitud,
+                    longitud: destinoPunto.longitud
+                });
+            }
+        }
+
+        punto['conexiones_salientes'] = conexiones_salientes;
+        puntosObtenidos.push(punto);
+    }
+
+    mostrarPuntos(puntosObtenidos);
+    dibujarConexiones(puntosObtenidos);
+</script>
+</body>
+</html>

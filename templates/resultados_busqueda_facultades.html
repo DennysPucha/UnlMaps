@@ -1,0 +1,19 @@
+{% for facultad in facultades %}
+<li class="list-group-item d-flex justify-content-between align-items-center"
+    data-facultad-id="{{ facultad.id }}" data-facultad-nombre="{{ facultad.nombre }}"
+    data-facultad-sigla="{{ facultad.sigla }}" data-facultad-decano="{{ facultad.decano }}">
+    {{ facultad.nombre }}
+    <div style="display: flex">
+        <a href="{% url 'editar_facultad' facultad_id=facultad.id %}" class="btn btn-primary me-2">Editar <i class="fas fa-edit"></i></a>
+        <button class="btn btn-danger btn-eliminar-facultad"
+            data-bs-toggle="modal"
+            data-bs-target="#modalEliminarFacultad"
+            data-facultad-id="{{ facultad.id }}"
+            data-facultad-nombre="{{ facultad.nombre }}">
+            Eliminar <i class="fas fa-trash"></i>
+        </button>
+    </div>
+</li>
+{% empty %}
+<p>No se encontraron resultados.</p>
+{% endfor %}

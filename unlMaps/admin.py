@@ -7,4 +7,4 @@ admin.site.register(Punto)
 admin.site.register(Bloque)
 admin.site.register(Cuenta)
 admin.site.register(Facultad)
-
+admin.site.register(Conexion)

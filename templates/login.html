@@ -1,0 +1,65 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <link rel="shortcut icon" href="#" />
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Inicio</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+
+    <!-- Hoja de Estilos de Sweet Alert -->
+</head>
+
+<body style="background-image:url({% static 'imagenes/Fondo.jpg' %})">
+    <div id="login"><br>
+        <h2 class="text-uppercase text-center fw-bolder font-monospace text-white display-5"> Bienvenido a <span class="badge bg-primary">UNLMaps</span></h2>
+        <div class="container">
+            <div id="login-row" class="d-flex justify-content-center align-items-center h-100">
+                <div id="login-column" class="col-md-6">
+                    <!-- Caja para el LOGIN -->
+                    <div id="login-box" class="col-md-12 bg-dark text-white">
+                        <!-- Formulario para la entrada de los Datos. -->
+                        <form id="formLogin" class="form" action="" method="post">
+                            {% csrf_token %}
+                            <br>
+                            <img src="{% static 'imagenes/user.png' %}" />
+                            <h3 class="card-header text-center">Iniciar Sesión</h3>
+
+                            {% if error_message %}
+                                <p class="text-danger">{{ error_message }}</p>
+                            {% endif %}
+
+                            <div class="form-group">
+                                <label for="usuario">Usuario:</label><br>
+                                <!-- Entrada para el usuario -->
+                                <input type="text" name="usuario" id="usuario" class="form-control" placeholder="Ingresa tu correo" required>
+                            </div>
+                            <br>
+                            <div class="form-group">
+                                <label class="form-label" for="password">Contraseña:</label><br>
+                                <!-- Entrada para la contraseña -->
+                                <input type="password" name="password" id="password" class="form-control" placeholder="Ingresa tu clave" required>
+                            </div>
+                            <br>
+                            <div class="form-group text-center">
+                                <input type="submit" name="submit" class="btn btn-primary btn-lg btn-block" value="Iniciar Sesión" style="width: 250px;">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+
+</html>
