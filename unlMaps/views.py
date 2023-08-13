@@ -20,59 +20,80 @@ def crear_conexion(request):
     if request.method == 'POST':
         accion = request.POST.get('accion')
         if accion == 'crear':
-            punto_origen_id = request.POST.get('punto_origen')
-            punto_destino_id = request.POST.get('punto_destino')
+            punto_origen_codigo = request.POST.get('punto_origen')
+            punto_destino_codigo = request.POST.get('punto_destino')
 
-            if punto_origen_id == punto_destino_id:
+            if punto_origen_codigo == punto_destino_codigo:
                 return HttpResponse('Error: El punto de origen y destino son iguales. Selecciona puntos diferentes.')
 
             try:
-                # Verificar si la conexión ya existe
-                conexion_existente = Conexion.objects.filter(nodo_origen_id=punto_origen_id,
-                                                             nodo_destino_id=punto_destino_id).exists()
+                conexion_existente = Conexion.objects.filter(nodo_origen__codigo=punto_origen_codigo,
+                                                             nodo_destino__codigo=punto_destino_codigo).exists()
                 if conexion_existente:
                     return HttpResponse('Error: La conexión ya existe.')
 
-                # Obtener los objetos de los puntos
-                punto_origen = Punto.objects.get(id=punto_origen_id)
-                punto_destino = Punto.objects.get(id=punto_destino_id)
+                punto_origen = Punto.objects.get(codigo=punto_origen_codigo)
+                punto_destino = Punto.objects.get(codigo=punto_destino_codigo)
 
-                # Crear la conexión
                 Conexion.objects.create(nodo_origen=punto_origen, nodo_destino=punto_destino)
                 Conexion.objects.create(nodo_origen=punto_destino, nodo_destino=punto_origen)
 
-                # Llamar a la función para actualizar el grafo
                 actualizar_grafo()
 
             except Punto.DoesNotExist:
                 return HttpResponse('Error: Uno o ambos puntos seleccionados no existen.')
         elif accion == 'borrar':
-            punto_origen_id = request.POST.get('punto_origen')
-            punto_destino_id = request.POST.get('punto_destino')
+            punto_origen_codigo = request.POST.get('punto_origen')
+            punto_destino_codigo = request.POST.get('punto_destino')
 
-            if punto_origen_id == punto_destino_id:
+            if punto_origen_codigo == punto_destino_codigo:
                 return HttpResponse('Error: El punto de origen y destino son iguales. Selecciona puntos diferentes.')
 
             try:
                 conexiones_a_borrar = Conexion.objects.filter(
-                    Q(nodo_origen_id=punto_origen_id, nodo_destino_id=punto_destino_id) |
-                    Q(nodo_origen_id=punto_destino_id, nodo_destino_id=punto_origen_id)
+                    Q(nodo_origen__codigo=punto_origen_codigo, nodo_destino__codigo=punto_destino_codigo) |
+                    Q(nodo_origen__codigo=punto_destino_codigo, nodo_destino__codigo=punto_origen_codigo)
                 )
-
-                # Borrar las conexiones
                 conexiones_a_borrar.delete()
 
             except Conexion.DoesNotExist:
                 return HttpResponse('Error: La conexión seleccionada no existe.')
 
-    puntos = Punto.objects.all()
+    mapas_queryset = Mapa.objects.prefetch_related(
+        'facultad_set__punto_set__conexiones_salientes',
+        'facultad_set__punto_set__bloque'
+    ).all()
 
-    context = {
-        'puntos': puntos,
-    }
+    grafo = {}
+    for mapa in mapas_queryset:
+        puntos = []
 
-    return render(request, 'crear_conexion.html', context)
+        for facultad in mapa.facultad_set.all():
+            for punto in facultad.punto_set.all():
+                punto_data = punto.as_dict()
+                punto_data['conexiones'] = [
+                    {
+                        'origen': conexion.nodo_origen.codigo,
+                        'destino': conexion.nodo_destino.codigo,
+                    }
+                    for conexion in punto.conexiones_salientes.all()
+                ]
+                if isinstance(punto, Bloque):
+                    bloque = punto.bloque
+                    punto_data.update({
+                        'valoracion': bloque.valoracion,
+                        'informacion': bloque.informacion,
+                        'foto': bloque.foto.path if bloque.foto else None,
+                    })
+                puntos.append(punto_data)
 
+        grafo[mapa.nombre] = {
+            'puntos': puntos,
+        }
+
+    grafo_json = json.dumps(grafo)
+
+    return render(request, 'crear_conexion.html', {'grafo_json': grafo_json})
 
 
 def calcular_distancia(request):
@@ -134,10 +155,6 @@ def crear_objeto(request):
 def admin(request):
     facultades = Facultad.objects.all()
     return render(request, 'admin.html', {'facultades': facultades})
-def selector(request):
-    facultades = Facultad.objects.all()
-    return render(request, 'vistaUsuario.html', {'facultades': facultades})
-
 
 def buscar(request):
 
@@ -283,15 +300,54 @@ def cerrar_sesion(request):
     logout(request)
     return redirect(reverse_lazy('login'))
 
+import json
+
 def puntos(request):
-    # Usar prefetch_related para obtener los puntos con sus conexiones salientes en una sola consulta
-    puntos_queryset = Punto.objects.all().prefetch_related('conexiones_salientes')
-    puntos_list = [punto.as_dict() for punto in puntos_queryset]
+    mapas_queryset = Mapa.objects.prefetch_related(
+        'facultad_set__punto_set__conexiones_salientes',
+        'facultad_set__punto_set__bloque'
+    ).all()
 
-    # Convertir la lista de puntos a formato JSON
-    puntos_json = json.dumps(puntos_list)
+    grafo = {}
+    for mapa in mapas_queryset:
+        puntos = []
 
-    return render(request, 'vistaUsuario.html', {'puntos_json': puntos_json})
+        for facultad in mapa.facultad_set.all():
+            for punto in facultad.punto_set.all():
+                punto_data = punto.as_dict()
+                punto_data['conexiones'] = [
+                    {
+                        'origen': conexion.nodo_origen.codigo,
+                        'destino': conexion.nodo_destino.codigo,
+                    }
+                    for conexion in punto.conexiones_salientes.all()
+                ]
+                if isinstance(punto, Bloque):
+                    bloque = punto.bloque
+                    punto_data.update({
+                        'valoracion': bloque.valoracion,
+                        'informacion': bloque.informacion,
+                        'foto': bloque.foto.path if bloque.foto else None,
+                    })
+                puntos.append(punto_data)
+
+        grafo[mapa.nombre] = {
+            'puntos': puntos,
+        }
+
+    grafo_json = json.dumps(grafo)
+
+    return render(request, 'vistaUsuario.html', {'grafo_json': grafo_json})
+
+
+
+
+
+
+
+
+
+
 
 def allPuntos(request):
     puntos_queryset = Punto.objects.all()

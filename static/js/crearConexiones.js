@@ -24,10 +24,17 @@ const map = new ol.Map({
     })
 });
 
-function agregarMarcadorEnMapa(latitud, longitud, nombre, descripcion) {
+// Crear una capa para mostrar la ubicación del dispositivo
+const vectorSource = new ol.source.Vector();
+const vectorLayer = new ol.layer.Vector({
+    source: vectorSource
+});
+map.addLayer(vectorLayer);
+
+function agregarMarcadorEnMapa(latitud, longitud, nombre, descripcion, foto, valoracion) {
     const coordenadas = ol.proj.fromLonLat([longitud, latitud]);
 
-    // Crear un marcador en la posición especificada
+    // Crear un marcador en la posición especificada con una imagen o logo como icono
     const marcador = new ol.Feature({
         geometry: new ol.geom.Point(coordenadas)
     });
@@ -36,179 +43,127 @@ function agregarMarcadorEnMapa(latitud, longitud, nombre, descripcion) {
     marcador.set('nombre', nombre);
     marcador.set('descripcion', descripcion);
     marcador.set('coordenadas', coordenadas);
+    marcador.set('foto', foto);
+    marcador.set('valoracion', valoracion);
 
-    // Estilo del marcador
-    let colorRelleno, letra;
-    if (nombre.includes('A')) {
-        colorRelleno = 'red';
-        letra = nombre;
-    } else if (nombre.includes('N')) {
-        colorRelleno = 'blue';
-        letra = nombre;
-    } else {
-        colorRelleno = 'gray';
-        letra = '';
-    }
+// Estilo del marcador con una imagen o logo
+const markerStyle = new ol.style.Style({
+    image: new ol.style.Icon({
+        anchor: [0.5, 1], // Punto de anclaje para centrar el icono en las coordenadas
+        src: nombre.includes('A') ? "/static/imagenes/Ubic.png" : (nombre.includes('N') ? "/static/imagenes/Ubic2.png" : "/static/imagenes/Ubic.png"), // URL de la imagen o logo
+        scale: 0.05 // Escala del icono (ajusta según sea necesario)
+    }),
+    text: new ol.style.Text({
+        text: nombre,
+        font: 'bold 50px Arial',
+        fill: new ol.style.Fill({ color: 'black' }),
+        offsetY: -15,
+        textAlign: 'center',
+        textBaseline: 'middle'
+    })
+});
 
-    marcador.setStyle(new ol.style.Style({
-        image: new ol.style.Circle({
-            radius: 6,
-            fill: new ol.style.Fill({ color: colorRelleno }),
-            stroke: new ol.style.Stroke({ color: 'white', width: 2 })
-        }),
-        text: new ol.style.Text({
-            text: letra,
-            font: '12px Arial',
-            fill: new ol.style.Fill({ color: 'black' }),
-            offsetY: -15,
-            textAlign: 'center',
-            textBaseline: 'middle'
-        })
-    }));
 
-    // Añadir el marcador a una capa de marcadores
-    const capaMarcadores = new ol.layer.Vector({
-        source: new ol.source.Vector({
-            features: [marcador]
-        })
+
+    marcador.setStyle(markerStyle);
+
+    // Añadir el marcador a una fuente de datos
+    const markerSource = new ol.source.Vector({
+        features: [marcador]
     });
 
-    // Añadir la capa de marcadores al mapa
-    map.addLayer(capaMarcadores);
-}
+    // Añadir una capa de marcadores al mapa
+    const markerLayer = new ol.layer.Vector({
+        source: markerSource,
+        minResolution: 0.1, // Definir la resolución mínima
+        maxResolution: 1 // Definir la resolución máxima
+    });
 
+    // Agregar la capa de marcadores al mapa
+    map.addLayer(markerLayer);
+
+    // Ajustar la vista del mapa para que los marcadores siempre mantengan el mismo tamaño
+    map.getView().on('change:resolution', function () {
+        const currentResolution = map.getView().getResolution();
+        const newScale = 0.03 / currentResolution; // Ajusta el valor según el tamaño deseado
+        markerStyle.getImage().setScale(newScale);
+        markerStyle.getText().setScale(newScale);
+    });
+}
 
 function mostrarPuntos(puntos) {
-  // Eliminar la capa de marcadores existente antes de agregar nuevos marcadores
-  map.getLayers().forEach(function (layer) {
-    if (layer instanceof ol.layer.Vector) {
-      map.removeLayer(layer);
-    }
-  });
-
-  for (const puntoKey in puntos) {
-    if (puntos.hasOwnProperty(puntoKey)) {
-      const punto = puntos[puntoKey];
-      const latitud = punto.latitud;
-      const longitud = punto.longitud;
-      const codigo = punto.codigo;
-      const descripcion = punto.descripcion;
-
-      agregarMarcadorEnMapa(latitud, longitud, codigo, descripcion);
-
-      // Obtener las conexiones salientes del punto
-      const conexionesSalientes = punto.conexiones_salientes;
-
-      // Unir cada conexión saliente con una línea en el mapa
-      for (const conexion of conexionesSalientes) {
-        const latitudOrigen = conexion.nodo_origen.latitud;
-        const longitudOrigen = conexion.nodo_origen.longitud;
-        const latitudDestino = conexion.nodo_destino.latitud;
-        const longitudDestino = conexion.nodo_destino.longitud;
-
-        const nodoOrigen = ol.proj.fromLonLat([longitudOrigen, latitudOrigen]);
-        const nodoDestino = ol.proj.fromLonLat([longitudDestino, latitudDestino]);
-console.log(nodoOrigen,nodoDestino);
-        unirConLinea(nodoOrigen, nodoDestino, estilo);
-      }
-    }
-  }
-}
-
-
-
-const estilo = new ol.style.Style({
-  stroke: new ol.style.Stroke({
-    color: 'blue',
-    width: 5,
-  }),
-});
-
-function unirConLinea(punto1, punto2, estilo) {
-
-  // Crea una nueva geometría de tipo LineString con las coordenadas de los puntos
-  const linea = new ol.geom.LineString([punto1, punto2]);
-
-  // Crea una característica (feature) a partir de la geometría
-  const feature = new ol.Feature(linea);
-
-  // Establece el estilo de la línea
-  feature.setStyle(estilo);
-
-  // Crea una capa vectorial para mostrar la línea
-  const capa = new ol.layer.Vector({
-    source: new ol.source.Vector({
-      features: [feature],
-    }),
-  });
-
-  // Agrega la capa al mapa
-  map.addLayer(capa);
-console.log("sipasa");
-  // Retorna la capa en caso de que necesites interactuar con ella más adelante
-  return capa;
-
-}
-
-map.on('singleclick', function (evt) {
-    var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
-        return feature;
+    // Eliminar la capa de marcadores existente antes de agregar nuevos marcadores
+    map.getLayers().forEach(function (layer) {
+        if (layer instanceof ol.layer.Vector) {
+            map.removeLayer(layer);
+        }
     });
-
-    if (feature) {
-        const nombreMarcador = feature.get('nombre');
-        const descripcionMarcador = feature.get('descripcion');
-        const coordenadas = feature.get('coordenadas');
-        console.log(nombreMarcador, descripcionMarcador, coordenadas);
-
-        const infoContent = document.getElementById('info-content');
-        const contenido = `<p><strong>${nombreMarcador}</strong></p><p>${descripcionMarcador}</p>`;
-
-        // Actualizar el contenido del recuadro con la información del marcador
-        infoContent.innerHTML = contenido;
-
-        // Mostrar el recuadro
-        infoContent.style.display = 'block';
-    } else {
-        console.log("No hay un marcador en esta ubicación.");
-
-        const infoContent = document.getElementById('info-content');
-
-        // Ocultar el recuadro si no hay marcador
-        infoContent.style.display = 'none';
-    }
-});
-
-function buscarMarcador() {
-    const buscado = document.getElementById('search-input').value.toLowerCase();
-
-    let encontrado = false;
 
     for (const puntoKey in puntos) {
         if (puntos.hasOwnProperty(puntoKey)) {
             const punto = puntos[puntoKey];
-            const nombre = punto.codigo.toLowerCase();
-            const descripcion = punto.descripcion.toLowerCase();
+            const latitud = punto.latitud;
+            const longitud = punto.longitud;
+            const codigo = punto.codigo;
+            const descripcion = punto.descripcion;
+            const foto = punto.foto;
+            const valoracion = punto.valoracion;
+            agregarMarcadorEnMapa(latitud, longitud, codigo, descripcion,foto, valoracion);
 
-            if (nombre.includes(buscado) || descripcion.includes(buscado)) {
-                hacerZoomAMarcador(punto.latitud, punto.longitud, 20);
-                encontrado = true;
-                break;
-            }
+        }
+    }
+}
+function dibujarConexiones(puntos) {
+    // Definir el estilo de línea
+    const lineStyle = new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            color: 'black',
+            width: 3
+        })
+    });
+
+    // Crear una fuente de datos para las líneas
+    const lineSource = new ol.source.Vector();
+
+    // Iterar sobre cada punto en la lista de puntos
+    for (const punto of puntos) {
+        // Obtener las coordenadas de origen desde el punto actual
+        const origenCoordenadas = ol.proj.fromLonLat([parseFloat(punto.longitud), parseFloat(punto.latitud)]);
+
+        // Obtener las conexiones salientes (destinos) del punto actual
+        const conexionesSalientes = punto.conexiones_salientes;
+
+        // Iterar sobre cada conexión saliente (destino)
+        for (const conexion of conexionesSalientes) {
+            // Obtener las coordenadas de destino desde la conexión actual
+            const destinoCoordenadas = ol.proj.fromLonLat([parseFloat(conexion.longitud), parseFloat(conexion.latitud)]);
+
+            // Imprimir las coordenadas de la línea a dibujar
+            console.log('Coordenadas de línea a dibujar:', origenCoordenadas, destinoCoordenadas);
+
+            // Crear una característica de línea con las coordenadas de origen y destino
+            const lineFeature = new ol.Feature({
+                geometry: new ol.geom.LineString([destinoCoordenadas, origenCoordenadas])
+            });
+
+            // Aplicar el estilo de línea a la característica
+            lineFeature.setStyle(lineStyle);
+
+            // Agregar la característica a la fuente de datos de líneas
+            lineSource.addFeature(lineFeature);
         }
     }
 
-    if (!encontrado) {
-        console.log("no");
-    }
+    // Crear una capa de líneas con la fuente de datos de líneas
+    const lineLayer = new ol.layer.Vector({
+        source: lineSource
+    });
+
+    // Agregar la capa de líneas al mapa (asegúrate de tener una variable 'map' que representa tu mapa OpenLayers)
+    map.addLayer(lineLayer);
 }
 
-function hacerZoomAMarcador(latitud, longitud, zoomLevel) {
-    const view = map.getView();
-    const center = ol.proj.fromLonLat([longitud, latitud]);
-    view.animate({
-        center: center,
-        zoom: zoomLevel,
-        duration: 1000 // Duración de la animación en milisegundos
-    });
-}
+
+
+
+

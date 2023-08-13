@@ -202,18 +202,49 @@
 
     <script src="https://openlayers.org/en/v6.13.0/build/ol.js"></script>
     <script src="/static/js/script.js"></script>
-    <script>
-        const puntos = {{ puntos_json|safe }};
-        mostrarPuntos(puntos);
-        console.log(puntos);
-        function buscaMarcador(){
-            console.log("si");
-            buscarMarcador(puntos);
+<script>
+    const grafo = {{ grafo_json|safe }};
+    console.log(grafo);
+    const puntos = grafo['Mapa']['puntos']; // Reemplaza 'nombre_del_mapa' por el nombre correcto
+    const puntosObtenidos = [];
+
+    // Itera sobre los puntos y obtén las coordenadas de las conexiones
+    for (const punto of puntos) {
+        const conexiones = punto['conexiones'];
+        const conexiones_salientes = [];
+
+        for (const conexion of conexiones) {
+            const destinoCodigo = conexion['destino'];
+            const destinoPunto = puntos.find(p => p.codigo === destinoCodigo);
+
+            if (destinoPunto) {
+                conexiones_salientes.push({
+                    codigo: destinoPunto.codigo,
+                    latitud: destinoPunto.latitud,
+                    longitud: destinoPunto.longitud
+                });
+            }
         }
-        function buscarCamino() {
-            crearGrafo(puntos);
-        }
-    </script>
+
+        punto['conexiones_salientes'] = conexiones_salientes;
+
+        puntosObtenidos.push(punto);
+    }
+
+    console.log(puntosObtenidos);
+    mostrarPuntos(puntosObtenidos);
+
+    function buscaMarcador() {
+        console.log("si");
+        buscarMarcador(puntosObtenidos);
+    }
+
+    function buscarCamino() {
+        crearGrafo(puntosObtenidos);
+    }
+</script>
+
+
 </body>
 
 </html>

@@ -36,33 +36,20 @@ class Punto(models.Model):
     facultad = models.ForeignKey(Facultad, on_delete=models.CASCADE)
 
     def as_dict(self):
-        conexiones_salientes = [
-            {
-                'codigo': conexion.nodo_destino.codigo,
-                'latitud': conexion.nodo_destino.latitud,
-                'longitud': conexion.nodo_destino.longitud
-            }
-            for conexion in self.conexiones_salientes.all()
-        ]
-
-        try:
-            bloque_data = {
-                'valoracion': self.bloque.valoracion,
-                'informacion': self.bloque.informacion,
-                'foto': self.bloque.foto.path if self.bloque.foto else None,
-            }
-        except Bloque.DoesNotExist:
-            bloque_data = {}
-
-        return {
+        punto_data = {
             'codigo': self.codigo,
             'latitud': self.latitud,
             'longitud': self.longitud,
             'descripcion': self.descripcion,
             'facultad': self.facultad.nombre,
-            'conexiones_salientes': conexiones_salientes,
-            **bloque_data,  # Incorporar los datos específicos de Bloque
         }
+
+        if hasattr(self, 'bloque'):
+            punto_data['valoracion'] = self.bloque.valoracion
+            punto_data['informacion'] = self.bloque.informacion
+            punto_data['foto'] = self.bloque.foto.path if self.bloque.foto else None
+
+        return punto_data
 
     def __str__(self):
         return self.codigo
