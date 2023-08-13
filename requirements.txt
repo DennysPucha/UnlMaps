@@ -1,7 +1,7 @@
 django==3.2.20
 Pillow==9.5.0
 asgiref==3.4.1
-certifi==2023.8.13
+certifi==2023.7.22
 charset-normalizer==2.0.4
 contourpy==1.4.2
 cycler==0.11.0
