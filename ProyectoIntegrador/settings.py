@@ -148,3 +148,5 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+FAVICON_PATH = os.path.join(BASE_DIR, 'static/imagenes/logo.png')
