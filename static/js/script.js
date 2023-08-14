@@ -72,7 +72,7 @@ geolocation.setTracking(true);
 
 
 
-function agregarMarcadorEnMapa(latitud, longitud, nombre, descripcion, foto, valoracion) {
+function agregarMarcadorEnMapa(latitud, longitud, nombre, descripcion, valoracion) {
     const coordenadas = ol.proj.fromLonLat([longitud, latitud]);
 
     // Crear un marcador en la posición especificada con una imagen o logo como icono
@@ -84,7 +84,6 @@ function agregarMarcadorEnMapa(latitud, longitud, nombre, descripcion, foto, val
     marcador.set('nombre', nombre);
     marcador.set('descripcion', descripcion);
     marcador.set('coordenadas', coordenadas);
-    marcador.set('foto', foto);
     marcador.set('valoracion', valoracion);
 
     // Estilo del marcador con una imagen o logo
@@ -146,13 +145,12 @@ function mostrarPuntos(puntos) {
             const longitud = punto.longitud;
             const codigo = punto.codigo;
             const descripcion = punto.descripcion;
-            const foto = punto.foto;
             const valoracion = punto.valoracion;
 
             const palabra = "A";
 
             if (codigo.includes(palabra)) {
-                agregarMarcadorEnMapa(latitud, longitud, codigo, descripcion,foto, valoracion);
+                agregarMarcadorEnMapa(latitud, longitud, codigo, descripcion, valoracion);
             }
         }
     }
@@ -208,14 +206,14 @@ map.on('singleclick', function (evt) {
         const nombreMarcador = feature.get('nombre');
         const descripcionMarcador = feature.get('descripcion');
         const coordenadas = feature.get('coordenadas');
-        const imagenURL = feature.get('foto');
+
         const valoraciones = feature.get('valoracion');
 
-        console.log(nombreMarcador, descripcionMarcador, coordenadas, imagenURL, valoraciones);
+        console.log(nombreMarcador, descripcionMarcador, coordenadas, valoraciones);
 
         const infoContent = document.getElementById('info-content');
         const contenido = `<p><strong>${nombreMarcador}</strong></p><p>${descripcionMarcador}</p>`;
-        const imagen = `<img src="${imagenURL}" alt="${nombreMarcador}">`;
+
 
         // Generar los iconos de estrella conforme al número de valoraciones
         const iconosEstrella = '<span class="valoracion-icon">' + '<i class="fas fa-star"></i>'.repeat(valoraciones) + '</span>';
@@ -230,7 +228,7 @@ map.on('singleclick', function (evt) {
         `;
 
         // Actualizar el contenido del recuadro con la información del marcador, la imagen y los botones
-        infoContent.innerHTML = imagen + contenido + botonesOrigenDestino;
+        infoContent.innerHTML =  contenido + botonesOrigenDestino;
 
         const botonOrigen = document.getElementById('botonOrigen');
         const botonDestino = document.getElementById('botonDestino');
